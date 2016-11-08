@@ -1,0 +1,122 @@
+body {
+    margin: 0;
+    padding: 10px;
+    font: 12px/14px "SF UI Text", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+    color: #000;
+    background: #fff;
+}
+
+.container {
+    width: 220px;
+}
+.preview {
+    float: left;
+    width: 55px;
+    height: 55px;
+    overflow: hidden;
+    margin: 0 10px 10px 0;
+    border-radius: 3px;
+    background: url(bg_transparent_pattern.svg) repeat;
+}
+#color {
+    width: 55px;
+    height: 55px;
+    background: hsl(0, 0%, 0%);
+    border-radius: 3px;
+    box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.7);
+}
+.add {
+    display: block;
+    opacity: 0;
+    width: 55px;
+    height: 0;
+    padding-top: 55px;
+    overflow: hidden;
+    cursor: default;
+    background: url(icon_add.svg) no-repeat 50% 50%;
+    transition: opacity 0.5s ease;
+}
+.add:hover {
+    opacity: 1;
+}
+
+.solider-container {
+    margin-left: 65px;
+}
+.solider {
+    margin-bottom: 5px;
+}
+#solider-h, #solider-s, #solider-l, #solider-a {
+    width: 155px;
+    height: 10px;
+    padding: 0;
+    border-radius: 2px;
+    box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.7);
+}
+input[type="range"] {
+    display: block;
+    width: 153px;
+    height: 10px;
+    margin: -10px 0 0 1px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    -webkit-appearance: none;
+}
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 8px;
+    width: 4px;
+    border-radius: 1px;
+    background: #f1f1f1;
+    box-shadow: 0 0 1px #000;
+}
+input[type=range]:focus {
+    outline: none;
+}
+
+.values {
+    clear: both;
+    font-size: 11px;
+}
+.values .value {
+    float: left;
+    margin-right: 5px;
+    text-align: center;
+}
+.values .value-hex {
+    margin-right: 10px;
+}
+.values .value-a {
+    margin-right: 0;
+}
+.values input[type="text"], .values input[type="number"] {
+    width: 27px;
+    height: 18px;
+    line-height: 18px;
+    margin: 0;
+    padding: 0 3px;
+    border: 1px solid #CCCCCC;
+    font-size: inherit;
+    background: #FFFFFF;
+}
+input[type="number"]::-webkit-inner-spin-button {
+     -webkit-appearance: none;
+}
+
+#text-hex {
+    width: 47px;
+}
+.values label {
+    display: block;
+    margin-top: 4px;
+}
+
+
+
+
+.test {
+    width: 100px;
+    height: 100px;
+    background: -webkit-linear-gradient(0, rgba(0,0,0,0), #f00), url(bg_transparent_pattern.svg);
+}

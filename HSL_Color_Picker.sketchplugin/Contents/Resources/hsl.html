@@ -3,111 +3,7 @@
 <head>
 <meta charset="utf-8">
 <title>HSL ColorPicker</title>
-<style>
-body{margin:0;padding:10px;font-size:12px;}
-
-.container {
-    width: 220px;
-}
-.preview {
-    float: left;
-    width: 55px;
-    height: 55px;
-    overflow: hidden;
-    margin: 0 10px 10px 0;
-    border-radius: 3px;
-    background: url(bg_transparent_pattern.svg) repeat;
-}
-#color {
-    width: 55px;
-    height: 55px;
-    background: hsl(0, 0%, 0%);
-    border-radius: 3px;
-    box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.7);
-}
-.add {
-    display: block;
-    width: 55px;
-    height: 0;
-    padding-top: 55px;
-    overflow: hidden;
-    cursor: default;
-    background: url(icon_add.svg) no-repeat 50% 50%;
-}
-
-.solider-container {
-    margin-left: 65px;
-}
-.solider {
-    margin-bottom: 5px;
-}
-#solider-h, #solider-s, #solider-l, #solider-a {
-    width: 155px;
-    height: 10px;
-    padding: 0;
-    border-radius: 2px;
-    box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.7);
-}
-input[type="range"] {
-    display: block;
-    width: 153px;
-    height: 10px;
-    margin: -10px 0 0 1px;
-    padding: 0;
-    border: 0;
-    background: transparent;
-    -webkit-appearance: none;
-}
-input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    height: 8px;
-    width: 4px;
-    border-radius: 1px;
-    background: #f1f1f1;
-    box-shadow: 0 0 1px #000;
-}
-input[type=range]:focus {
-    outline: none;
-}
-
-.values {
-    clear: both;
-    font-size: 11px;
-}
-.values .value {
-    float: left;
-    margin-right: 5px;
-    text-align: center;
-}
-.values .value-hex {
-    margin-right: 10px;
-}
-.values .value-a {
-    margin-right: 0;
-}
-.values input[type="text"] {
-    width: 27px;
-    height: 18px;
-    line-height: 18px;
-    margin: 0;
-    padding: 0 3px;
-    border: 1px solid #CCCCCC;
-    font-size: inherit;
-    background: #FFFFFF;
-}
-#color-hex {
-    width: 47px;
-}
-.values label {
-    display: block;
-    margin-top: 4px;
-}
-
-
-
-.label{width:16px;float:left;}
-
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="container">
@@ -136,178 +32,191 @@ input[type=range]:focus {
 </div>
 <div class="values">
     <div class="value value-hex">
-        <input type="text" id="color-hex" value="000000" maxlength="6">
+        <input type="text" id="text-hex" value="000000" maxlength="7">
         <label for="color-hex">HEX</label>
     </div>
     <div class="value value-h">
-        <input type="text" id="color-h" value="100" maxlength="3">
+        <input type="number" id="text-h" value="100" maxlength="3">
         <label for="color-hex">H</label>
     </div>
     <div class="value value-s">
-        <input type="text" id="color-s" value="50" maxlength="3">
+        <input type="number" id="text-s" value="50" maxlength="3">
         <label for="color-hex">S</label>
     </div>
     <div class="value value-l">
-        <input type="text" id="color-l" value="100" maxlength="3">
+        <input type="number" id="text-l" value="100" maxlength="3">
         <label for="color-hex">L</label>
     </div>
     <div class="value value-a">
-        <input type="text" id="color-a" value="100" maxlength="3">
+        <input type="number" id="text-a" value="100" maxlength="3">
         <label for="color-hex">A</label>
     </div>
 </div>
 </div>
 
 
-
-<hr style="clear:both;">
-
-hsla(<span id="color-h-text">0</span>,<span id="color-s-text">0</span>%,<span id="color-l-text">0</span>%,
-<input type="text" id="color-hsl" value="hsl(0,0,0)">
-<input type="text" id="color-luminance" value="0">
-
-
-
-
 <script>
 
-var color = document.getElementById('color');
-
-
-var _h = document.getElementById('color-h');
-var _s = document.getElementById('color-s');
-var _l = document.getElementById('color-l');
-var _hh = document.getElementById('color-h-text');
-var _ss = document.getElementById('color-s-text');
-var _ll = document.getElementById('color-l-text');
-var _hex = document.getElementById('color-hex');
-var _hsl = document.getElementById('color-hsl');
-var _lum = document.getElementById('color-luminance');
-
-var soliderTrackH = document.getElementById('solider-h');
-var soliderTrackS = document.getElementById('solider-s');
-var soliderTrackL = document.getElementById('solider-l');
-var soliderTrackA = document.getElementById('solider-a');
+var preview = document.getElementById("color"),
+    soliderH = document.getElementById("color-h"),
+    soliderS = document.getElementById("color-s"),
+    soliderL = document.getElementById("color-l"),
+    soliderA = document.getElementById("color-a"),
+    textHex = document.getElementById("text-hex"),
+    textH = document.getElementById("text-h"),
+    textS = document.getElementById("text-s"),
+    textL = document.getElementById("text-l"),
+    textA = document.getElementById("text-a"),
+    soliderTrackH = document.getElementById("solider-h"),
+    soliderTrackS = document.getElementById("solider-s"),
+    soliderTrackL = document.getElementById("solider-l"),
+    soliderTrackA = document.getElementById("solider-a");
 
 soliderTrackH.style.background = solidBackgroundH();
-// soliderTrackS.style.background = solidBackgroundS();
-// soliderTrackL.style.background = solidBackgroundL();
-// soliderTrackA.style.background = solidBackgroundA();
+
+soliderH.oninput = function() {
+    updataInterface();
+}
+soliderS.oninput = function() {
+    updataInterface();
+}
+soliderL.oninput = function() {
+    updataInterface();
+}
+soliderA.oninput = function() {
+    updataInterface();
+}
+
+textHex.oninput = function() {
+    if (/[^a-fA-F0-9]/.test(this.value)) {
+        this.value = this.value.replace(/[^a-fA-F0-9]/g, "");
+    }
+    if (/[a-fA-F0-9]{6}/.test(this.value)) {
+        if (this.value.length > 6) {
+            this.value = this.value.substr(0, 6);
+        }
+    }
+}
+textHex.onchange = function() {
+    var hsl = HEXtoHSL(this.value);
+    soliderH.value = hsl[0];
+    soliderS.value = hsl[1];
+    soliderL.value = hsl[2];
+    updataInterface();
+}
+
+textH.oninput = function() {
+    checkNumber(this, 360);
+}
+textH.onchange = function() {
+    soliderH.value = this.value;
+    updataInterface();
+}
+
+textS.oninput = function() {
+    checkNumber(this, 100);
+}
+textS.onchange = function() {
+    soliderS.value = this.value;
+    updataInterface();
+}
+
+textL.oninput = function() {
+    checkNumber(this, 100);
+}
+textL.onchange = function() {
+    soliderL.value = this.value;
+    updataInterface();
+}
+
+textA.oninput = function() {
+    checkNumber(this, 100);
+}
+textA.onchange = function() {
+    soliderA.value = this.value;
+    updataInterface();
+}
+// textA.onkeypress = function(event) {
+//     var keycode = event.keyCode;
+//
+//     if (keycode == "115") {
+//         this.value = parseInt(this.value) - 1;
+//     }
+//
+//     updataInterface();
+//
+//     console.log(keycode);
+// }
+
+
+
+
+window.onload = function() {
+    updataInterface();
+}
+
+
+
 
 function solidBackgroundH() {
-    var css = '-webkit-linear-gradient(0';
+    var css = "-webkit-linear-gradient(0";
     for(var i = 0; i <= 360; i += 10) {
-        css = css + ',' + 'hsl(' + i + ',100%,50%)';
+        css = css + "," + "hsl(" + i + ",100%,50%)";
     }
-        css += ')';
+        css += ")";
     return css;
 }
 
-
-
-
-
-_h.onchange = function() {
-    //console.log(_h.value, _s.value, _l.value);
-    _hh.innerHTML = _h.value;
-    _hex.value = HSLtoHEX(_h.value, _s.value, _l.value);
-    _hsl.value = 'hsl(' + _h.value + ', ' + _s.value + ', ' + _l.value + ')';
-    _lum.value = HSLtoLuminance(_h.value, _s.value, _l.value);
-    color.style.background = 'hsl(' + _h.value + ',' + _s.value + '%,' + _l.value + '%)';
+function solidBackgroundS(h, l) {
+    var css = "-webkit-linear-gradient(0";
+    for(var i = 0; i <= 100; i += 20) {
+        css = css + "," + "hsl(" + h + "," + i + "%," + l + "%)";
+    }
+        css += ")";
+    return css;
 }
 
-_h.oninput = function() {
-    //console.log(_h.value, _s.value, _l.value);
-    _hh.innerHTML = _h.value;
-    _hex.value = HSLtoHEX(_h.value, _s.value, _l.value);
-    _hsl.value = 'hsl(' + _h.value + ', ' + _s.value + ', ' + _l.value + ')';
-    _lum.value = HSLtoLuminance(_h.value, _s.value, _l.value);
-    color.style.background = 'hsl(' + _h.value + ',' + _s.value + '%,' + _l.value + '%)';
+function solidBackgroundL(h, s) {
+    var css = "-webkit-linear-gradient(0";
+    for(var i = 0; i <= 100; i += 20) {
+        css = css + "," + "hsl(" + h + "," + s + "%," + i + "%)";
+    }
+        css += ")";
+    return css;
 }
 
-_s.oninput = function() {
-    //console.log(_h.value, _s.value, _l.value);
-    _ss.innerHTML = _s.value;
-    _hex.value = HSLtoHEX(_h.value, _s.value, _l.value);
-    _hsl.value = 'hsl(' + _h.value + ', ' + _s.value + ', ' + _l.value + ')';
-    _lum.value = HSLtoLuminance(_h.value, _s.value, _l.value);
-    color.style.background = 'hsl(' + _h.value + ',' + _s.value + '%,' + _l.value + '%)';
+function solidBackgroundA(h, s, l) {
+    var css = "-webkit-linear-gradient(0";
+    for(var i = 0; i <= 100; i += 20) {
+        css = css + "," + "hsla(" + h + "," + s + "%," + l + "%," + i/100 + ")";
+    }
+        css += "),url(bg_transparent_pattern.svg) repeat 0 50%";
+    return css;
 }
 
-_l.oninput = function() {
-    //console.log(_h.value, _s.value, _l.value);
-    _ll.innerHTML = _l.value;
-    _hex.value = HSLtoHEX(_h.value, _s.value, _l.value);
-    _hsl.value = 'hsl(' + _h.value + ', ' + _s.value + ', ' + _l.value + ')';
-    _lum.value = HSLtoLuminance(_h.value, _s.value, _l.value);
-    color.style.background = 'hsl(' + _h.value + ',' + _s.value + '%,' + _l.value + '%)';
+function updataInterface() {
+    // console.log(soliderH.value, soliderS.value, soliderL.value);
+    textH.value = soliderH.value;
+    textS.value = soliderS.value;
+    textL.value = soliderL.value;
+    textA.value = soliderA.value;
+    textHex.value = HSLtoHEX(soliderH.value, soliderS.value, soliderL.value);
+    preview.style.background = "hsla(" + soliderH.value + "," + soliderS.value + "%," + soliderL.value + "%," + soliderA.value/100 + ")";
+    soliderTrackS.style.background = solidBackgroundS(soliderH.value, soliderL.value);
+    soliderTrackL.style.background = solidBackgroundL(soliderH.value, soliderS.value);
+    soliderTrackA.style.background = solidBackgroundA(soliderH.value, soliderS.value, soliderL.value);
 }
 
-_hex.oninput = function() {
-    var hsl = HEXtoHSL(this.value);
-    _h.value = hsl[0];
-    _hh.innerHTML = hsl[0];
-    _s.value = hsl[1];
-    _ss.innerHTML = hsl[1];
-    _l.value = hsl[2];
-    _ll.innerHTML = hsl[2];
-
-    _hsl.value = 'hsl(' + _h.value + ', ' + _s.value + ', ' + _l.value + ')';
-    _lum.value = HSLtoLuminance(_h.value, _s.value, _l.value);
-    color.style.background = 'hsl(' + _h.value + ',' + _s.value + '%,' + _l.value + '%)';
-}
-
-window.onload = function() {
-    _hh.innerHTML = _h.value;
-    _ss.innerHTML = _s.value;
-    _ll.innerHTML = _l.value;
-    _hex.value = HSLtoHEX(_h.value, _s.value, _l.value);
-    _hsl.value = 'hsl(' + _h.value + ', ' + _s.value + ', ' + _l.value + ')';
-    _lum.value = HSLtoLuminance(_h.value, _s.value, _l.value);
-    color.style.background = 'hsl(' + _h.value + ',' + _s.value + '%,' + _l.value + '%)';
-}
-
-function addValue(id, value, maxValue) {
-    var v1 = Number (document.getElementById(id).value);
-    var v2 = (v1 + value) > maxValue ? ((v1 + value) - maxValue) : (v1 + value);
-    document.getElementById(id).value = v2;
-
-    console.log(v2);
-
-
-        _hh.innerHTML = _h.value;
-        _ss.innerHTML = _s.value;
-        _ll.innerHTML = _l.value;
-        _hex.value = HSLtoHEX(_h.value, _s.value, _l.value);
-        _hsl.value = 'hsl(' + _h.value + ', ' + _s.value + ', ' + _l.value + ')';
-        color.style.background = 'hsl(' + _h.value + ',' + _s.value + '%,' + _l.value + '%)';
-
-
-}
-
-function minusValue(id, value, maxValue) {
-    var v1 = Number (document.getElementById(id).value);
-    var v2 = (v1 - value) < 0 ? (maxValue + v1 - value) : (v1 - value);
-    document.getElementById(id).value = v2;
-
-    console.log(v2);
-
-
-        _hh.innerHTML = _h.value;
-        _ss.innerHTML = _s.value;
-        _ll.innerHTML = _l.value;
-        _hex.value = HSLtoHEX(_h.value, _s.value, _l.value);
-        _hsl.value = 'hsl(' + _h.value + ', ' + _s.value + ', ' + _l.value + ')';
-        color.style.background = 'hsl(' + _h.value + ',' + _s.value + '%,' + _l.value + '%)';
-
+function checkNumber(target, maxValue) {
+    if (/[^0-9]/.test(target.value)) {
+        target.value = target.value.replace(/[^0-9]/g, "");
+    }
+    if (parseInt(target.value) > maxValue) {
+        target.value = maxValue;
+    }
 }
 
 
-
-
-
-
-function updataInterface(){}
 
 
 
@@ -316,11 +225,11 @@ function HSLtoHEX(h, s, l) {
     var hex_g = HSLtoRGB(h, s, l)[1].toString(16);
     var hex_b = HSLtoRGB(h, s, l)[2].toString(16);
 
-    hex_r = (hex_r.length == 1) ? '0' + hex_r : hex_r;
-    hex_g = (hex_g.length == 1) ? '0' + hex_g : hex_g;
-    hex_b = (hex_b.length == 1) ? '0' + hex_b : hex_b;
+    hex_r = (hex_r.length == 1) ? "0" + hex_r : hex_r;
+    hex_g = (hex_g.length == 1) ? "0" + hex_g : hex_g;
+    hex_b = (hex_b.length == 1) ? "0" + hex_b : hex_b;
 
-    return hex_r + hex_g + hex_b;
+    return (hex_r + hex_g + hex_b).toUpperCase();
 }
 
 /**
@@ -360,7 +269,7 @@ function HSLtoRGB(h, s, l) {
 
 /**
  * Converts an RGB color value to HSL. Conversion formula
- * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
+ * adapted from http://en.wikipedia.org/wiki/HSL_colorsoliderSpace.
  * Assumes r, g, and b are contained in the set [0, 255] and
  * returns h, s, and l in the set [0, 1].
  *
@@ -395,15 +304,6 @@ function HEXtoHSL(hex) {
         g = parseInt(hex.substring(2,4), 16),
         b = parseInt(hex.substring(4,6), 16);
     return RGBtoHSL(r, g, b);
-}
-
-function RGBtoLuminance(r, g, b) {
-    return 0.2126729 * r + 0.7151522 * g + 0.0721750 * b;
-}
-
-function HSLtoLuminance(h, s, l) {
-    var rgb = HSLtoRGB(h, s, l);
-    return Math.round((0.2126729 * rgb[0] + 0.7151522 * rgb[1] + 0.0721750 * rgb[2]) / 255 * 100);
 }
 
 </script>
