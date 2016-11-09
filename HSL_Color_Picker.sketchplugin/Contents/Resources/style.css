@@ -111,12 +111,3 @@ input[type="number"]::-webkit-inner-spin-button {
     display: block;
     margin-top: 4px;
 }
-
-
-
-
-.test {
-    width: 100px;
-    height: 100px;
-    background: -webkit-linear-gradient(0, rgba(0,0,0,0), #f00), url(bg_transparent_pattern.svg);
-}

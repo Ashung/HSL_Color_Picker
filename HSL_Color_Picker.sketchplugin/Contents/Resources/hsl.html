@@ -54,8 +54,17 @@
 </div>
 </div>
 
-
 <script>
+
+var color = {
+    "hex" : "FF0000",
+    "r" : 255,
+    "g" : 0,
+    "b" : 0,
+    "a" : 100,
+    "hsl" : [0, 100, 50],
+    "hsb" : [0, 100, 100]
+}
 
 var preview = document.getElementById("color"),
     soliderH = document.getElementById("color-h"),
@@ -136,26 +145,10 @@ textA.onchange = function() {
     soliderA.value = this.value;
     updataInterface();
 }
-// textA.onkeypress = function(event) {
-//     var keycode = event.keyCode;
-//
-//     if (keycode == "115") {
-//         this.value = parseInt(this.value) - 1;
-//     }
-//
-//     updataInterface();
-//
-//     console.log(keycode);
-// }
-
-
-
 
 window.onload = function() {
     updataInterface();
 }
-
-
 
 
 function solidBackgroundH() {
@@ -205,6 +198,24 @@ function updataInterface() {
     soliderTrackS.style.background = solidBackgroundS(soliderH.value, soliderL.value);
     soliderTrackL.style.background = solidBackgroundL(soliderH.value, soliderS.value);
     soliderTrackA.style.background = solidBackgroundA(soliderH.value, soliderS.value, soliderL.value);
+
+    var rgb = HSLtoRGB(soliderH.value, soliderS.value, soliderL.value);
+    color.hex = HSLtoHEX(soliderH.value, soliderS.value, soliderL.value);
+    color.r = rgb[0];
+    color.g = rgb[1];
+    color.b = rgb[2];
+    color.a = parseInt(soliderA.value);
+    color.hsl = [parseInt(soliderH.value), parseInt(soliderS.value), parseInt(soliderL.value)];
+    color.hsb = RGBtoHSB(rgb[0], rgb[1], rgb[2]);
+}
+
+function updateInterfaceWithHexColor(hex, alpha) {
+    var hsl = HEXtoHSL(hex);
+    soliderH.value = hsl[0] || 0;
+    soliderS.value = hsl[1] || 100;
+    soliderL.value = hsl[2] || 50;
+    soliderA.value = alpha || 100;
+    updataInterface();
 }
 
 function checkNumber(target, maxValue) {
@@ -216,21 +227,6 @@ function checkNumber(target, maxValue) {
     }
 }
 
-
-
-
-
-function HSLtoHEX(h, s, l) {
-    var hex_r = HSLtoRGB(h, s, l)[0].toString(16);
-    var hex_g = HSLtoRGB(h, s, l)[1].toString(16);
-    var hex_b = HSLtoRGB(h, s, l)[2].toString(16);
-
-    hex_r = (hex_r.length == 1) ? "0" + hex_r : hex_r;
-    hex_g = (hex_g.length == 1) ? "0" + hex_g : hex_g;
-    hex_b = (hex_b.length == 1) ? "0" + hex_b : hex_b;
-
-    return (hex_r + hex_g + hex_b).toUpperCase();
-}
 
 /**
  * @param   Number  h       The hue
@@ -245,26 +241,26 @@ function HSLtoRGB(h, s, l) {
 
     var r, g, b;
 
-    if(s == 0){
+    if (s == 0) {
         r = g = b = l; // achromatic
-    }else{
+    } else {
         function hue2rgb(p, q, t){
             if(t < 0) t += 1;
             if(t > 1) t -= 1;
-            if(t < 1/6) return p + (q - p) * 6 * t;
-            if(t < 1/2) return q;
-            if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+            if(t < 1 / 6) return p + (q - p) * 6 * t;
+            if(t < 1 / 2) return q;
+            if(t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
             return p;
         }
 
         var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
         var p = 2 * l - q;
-        r = hue2rgb(p, q, h + 1/3);
+        r = hue2rgb(p, q, h + 1 / 3);
         g = hue2rgb(p, q, h);
-        b = hue2rgb(p, q, h - 1/3);
+        b = hue2rgb(p, q, h - 1 / 3);
     }
 
-    return [Math.round(r*255), Math.round(g*255), Math.round(b*255)];
+    return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
 }
 
 /**
@@ -280,6 +276,7 @@ function HSLtoRGB(h, s, l) {
  */
 function RGBtoHSL(r, g, b) {
     r /= 255, g /= 255, b /= 255;
+
     var max = Math.max(r, g, b), min = Math.min(r, g, b);
     var h, s, l = (max + min) / 2;
 
@@ -296,14 +293,75 @@ function RGBtoHSL(r, g, b) {
         h /= 6;
     }
 
-    return [Math.round(h*360), Math.round(s*100), Math.round(l*100)];
+    return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
+}
+
+/**
+ * Converts an RGB color value to HSV. Conversion formula
+ * adapted from http://en.wikipedia.org/wiki/HSV_color_space.
+ * Assumes r, g, and b are contained in the set [0, 255] and
+ * returns h, s, and v in the set [0, 1].
+ *
+ * @param   Number  r       The red color value
+ * @param   Number  g       The green color value
+ * @param   Number  b       The blue color value
+ * @return  Array           The HSV representation
+ */
+function RGBtoHSB(r, g, b) {
+    r /= 255, g /= 255, b /= 255;
+    var rr, gg, bb, h, s,
+        v = Math.max(r, g, b),
+        diff = v - Math.min(r, g, b),
+        diffc = function(c){
+            return (v - c) / 6 / diff + 1 / 2;
+        };
+
+    if (diff == 0) {
+        h = s = 0;
+    } else {
+        s = diff / v;
+        rr = diffc(r);
+        gg = diffc(g);
+        bb = diffc(b);
+
+        if (r === v) {
+            h = bb - gg;
+        }else if (g === v) {
+            h = (1 / 3) + rr - bb;
+        }else if (b === v) {
+            h = (2 / 3) + gg - rr;
+        }
+        if (h < 0) {
+            h += 1;
+        }else if (h > 1) {
+            h -= 1;
+        }
+    }
+
+    return [Math.round(h * 360), Math.round(s * 100), Math.round(v * 100)];
+}
+
+function HSLtoHEX(h, s, l) {
+    var hex_r = HSLtoRGB(h, s, l)[0].toString(16);
+    var hex_g = HSLtoRGB(h, s, l)[1].toString(16);
+    var hex_b = HSLtoRGB(h, s, l)[2].toString(16);
+
+    hex_r = (hex_r.length == 1) ? "0" + hex_r : hex_r;
+    hex_g = (hex_g.length == 1) ? "0" + hex_g : hex_g;
+    hex_b = (hex_b.length == 1) ? "0" + hex_b : hex_b;
+
+    return (hex_r + hex_g + hex_b).toUpperCase();
 }
 
 function HEXtoHSL(hex) {
-    var r = parseInt(hex.substring(0,2), 16),
-        g = parseInt(hex.substring(2,4), 16),
-        b = parseInt(hex.substring(4,6), 16);
+    var r = parseInt(hex.substring(0, 2), 16),
+        g = parseInt(hex.substring(2, 4), 16),
+        b = parseInt(hex.substring(4, 6), 16);
     return RGBtoHSL(r, g, b);
+}
+
+function HSLtoHSB(h, s, l) {
+
 }
 
 </script>

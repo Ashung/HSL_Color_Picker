@@ -1,0 +1,40 @@
+
+@import "MochaJSDelegate/MochaJSDelegate.js";
+
+var onRun = function(context) {
+
+    var sketch = context.api();
+
+    log(sketch)
+
+    // var doc = context.document;
+    // var selection = context.selection;
+    // var layer = selection.firstObject();
+
+    //log(layer.style().enabledFills());
+    // log(layer.style().enabledFills().lastObject().color().hexValue())
+    // log(layer.style().enabledFills().lastObject().gradient().to())
+    // .gradient().gradientType()
+    // .image().image().size()
+    // fillType()
+    // enabledFills()
+    //.color().hexValue()
+    // .fills().lastObject().class()
+
+    // var frame = NSMakeRect(0, 0, options.width, (options.height + 32)),
+    //     titleBgColor = NSColor.colorWithRed_green_blue_alpha(0.1, 0.1, 0.1, 1),
+    //     contentBgColor = NSColor.colorWithRed_green_blue_alpha(0.13, 0.13, 0.13, 1);
+    //
+    // var Panel = NSPanel.alloc().init();
+    //     Panel.setTitleVisibility(NSWindowTitleHidden);
+    //     Panel.setTitlebarAppearsTransparent(true);
+    //     // Panel.standardWindowButton(NSWindowCloseButton).setHidden(options.hiddenClose);
+    //     // Panel.standardWindowButton(NSWindowMiniaturizeButton).setHidden(true);
+    //     // Panel.standardWindowButton(NSWindowZoomButton).setHidden(true);
+    //     Panel.setFrame_display(frame, false);
+    //     Panel.setBackgroundColor(contentBgColor);
+    //
+    //     NSApp.runModalForWindow(Panel);
+
+
+}
