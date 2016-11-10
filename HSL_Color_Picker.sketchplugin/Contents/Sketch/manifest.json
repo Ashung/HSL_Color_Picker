@@ -14,5 +14,12 @@
             "identifier": "hsl_color_picker",
             "script": "hsl_color_picker.cocoascript"
         }
-    ]
+    ],
+    "menu": {
+        "isRoot": true,
+        "title": "HSL Color Picker",
+        "items": [
+            "hsl_color_picker"
+        ]
+    }
 }

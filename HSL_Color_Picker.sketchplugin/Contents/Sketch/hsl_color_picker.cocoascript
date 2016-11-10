@@ -1,11 +1,8 @@
 
-@import "MochaJSDelegate/MochaJSDelegate.js";
+// @import "MochaJSDelegate/MochaJSDelegate.js";
 
 var onRun = function(context) {
 
-    var sketch = context.api();
-
-    log(sketch)
 
     // var doc = context.document;
     // var selection = context.selection;
@@ -13,28 +10,32 @@ var onRun = function(context) {
 
     //log(layer.style().enabledFills());
     // log(layer.style().enabledFills().lastObject().color().hexValue())
-    // log(layer.style().enabledFills().lastObject().gradient().to())
-    // .gradient().gradientType()
-    // .image().image().size()
     // fillType()
     // enabledFills()
     //.color().hexValue()
     // .fills().lastObject().class()
 
-    // var frame = NSMakeRect(0, 0, options.width, (options.height + 32)),
-    //     titleBgColor = NSColor.colorWithRed_green_blue_alpha(0.1, 0.1, 0.1, 1),
-    //     contentBgColor = NSColor.colorWithRed_green_blue_alpha(0.13, 0.13, 0.13, 1);
-    //
-    // var Panel = NSPanel.alloc().init();
-    //     Panel.setTitleVisibility(NSWindowTitleHidden);
-    //     Panel.setTitlebarAppearsTransparent(true);
-    //     // Panel.standardWindowButton(NSWindowCloseButton).setHidden(options.hiddenClose);
-    //     // Panel.standardWindowButton(NSWindowMiniaturizeButton).setHidden(true);
-    //     // Panel.standardWindowButton(NSWindowZoomButton).setHidden(true);
-    //     Panel.setFrame_display(frame, false);
-    //     Panel.setBackgroundColor(contentBgColor);
-    //
-    //     NSApp.runModalForWindow(Panel);
+    // ColorPicker main window
+    var title = "HSL Color Picker";
+    var identifier = "com.ashung.hung.hsl_color_picker";
+    var threadDictionary = NSThread.mainThread().threadDictionary();
+    var colorPicker = NSPanel.alloc().init() || threadDictionary[identifier];
+    colorPicker.setFrame_display(NSMakeRect(0, 0, 240, 150), false);
+    colorPicker.setBackgroundColor(NSColor.colorWithRed_green_blue_alpha(1, 1, 1, 1));
+    colorPicker.setTitle(title);
+    colorPicker.setTitlebarAppearsTransparent(true);
+    colorPicker.standardWindowButton(NSWindowMiniaturizeButton).setHidden(true);
+    colorPicker.standardWindowButton(NSWindowZoomButton).setHidden(true);
+    colorPicker.becomeKeyWindow();
+    colorPicker.setLevel(NSFloatingWindowLevel);
+    threadDictionary[identifier] = colorPicker;
+    colorPicker.center();
+    colorPicker.makeKeyAndOrderFront(nil);
 
+    // Add Web View to window
+    var webView = WebView.alloc().initWithFrame(NSMakeRect(0, -24, 240, 150));
+    var colorPickerHTML = context.plugin.urlForResourceNamed("hsl.html");
+    webView.mainFrame().loadRequest(NSURLRequest.requestWithURL(colorPickerHTML));
+    colorPicker.contentView().addSubview(webView);
 
 }
