@@ -13,13 +13,19 @@
             "name": "HSL Color Picker",
             "identifier": "hsl_color_picker",
             "script": "hsl_color_picker.cocoascript"
+        },
+        {
+            "name": "TEST",
+            "identifier": "test",
+            "script": "test.cocoascript"
         }
     ],
     "menu": {
-        "isRoot": true,
-        "title": "HSL Color Picker",
+        "isRoot": false,
+        "title": "OO",
         "items": [
-            "hsl_color_picker"
+            "hsl_color_picker",
+            "test"
         ]
     }
 }

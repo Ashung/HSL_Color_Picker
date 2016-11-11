@@ -19,7 +19,8 @@ var onRun = function(context) {
     var title = "HSL Color Picker";
     var identifier = "com.ashung.hung.hsl_color_picker";
     var threadDictionary = NSThread.mainThread().threadDictionary();
-    var colorPicker = NSPanel.alloc().init() || threadDictionary[identifier];
+
+    var colorPicker = NSPanel.alloc().init();
     colorPicker.setFrame_display(NSMakeRect(0, 0, 240, 150), false);
     colorPicker.setBackgroundColor(NSColor.colorWithRed_green_blue_alpha(1, 1, 1, 1));
     colorPicker.setTitle(title);
@@ -29,13 +30,27 @@ var onRun = function(context) {
     colorPicker.becomeKeyWindow();
     colorPicker.setLevel(NSFloatingWindowLevel);
     threadDictionary[identifier] = colorPicker;
-    colorPicker.center();
-    colorPicker.makeKeyAndOrderFront(nil);
+
 
     // Add Web View to window
     var webView = WebView.alloc().initWithFrame(NSMakeRect(0, -24, 240, 150));
     var colorPickerHTML = context.plugin.urlForResourceNamed("hsl.html");
     webView.mainFrame().loadRequest(NSURLRequest.requestWithURL(colorPickerHTML));
+
+
+    // var windowObject = webView.windowScriptObject();
+    // webView.setMainFrameURL(colorPickerHTML.path());
+
     colorPicker.contentView().addSubview(webView);
+
+    colorPicker.center();
+    colorPicker.makeKeyAndOrderFront(nil);
+
+
+    // webView.stringByEvaluatingJavaScriptFromString('updateInterfaceWithHexColor("00ff00", 1)');
+    //
+    // log("11" + webView.stringByEvaluatingJavaScriptFromString("getCurrentColor()"));
+    // log("22" + webView.stringByEvaluatingJavaScriptFromString("document.title"));
+
 
 }

@@ -1,0 +1,81 @@
+@import "MochaJSDelegate/MochaJSDelegate.js"
+
+var onRun = function(context) {
+
+
+
+
+
+    // ColorPicker main window
+    var title = "HSL Color Picker";
+    var identifier = "com.ashung.hung.hsl_color_picker";
+    var threadDictionary = NSThread.mainThread().threadDictionary();
+    var colorPicker = threadDictionary[identifier];
+
+if (!colorPicker) {
+
+
+    colorPicker = NSPanel.alloc().init();
+    colorPicker.setFrame_display(NSMakeRect(0, 0, 240, 150), false);
+    colorPicker.setBackgroundColor(NSColor.colorWithRed_green_blue_alpha(1, 1, 1, 1));
+    colorPicker.setTitle(title);
+    colorPicker.setTitlebarAppearsTransparent(true);
+    colorPicker.standardWindowButton(NSWindowMiniaturizeButton).setHidden(true);
+    colorPicker.standardWindowButton(NSWindowZoomButton).setHidden(true);
+    colorPicker.becomeKeyWindow();
+    colorPicker.setLevel(NSFloatingWindowLevel);
+    threadDictionary[identifier] = colorPicker;
+
+
+    // Add Web View to window
+    // var webView = WebView.alloc().initWithFrame(NSMakeRect(0, -24, 240, 150));
+    // var colorPickerHTML = context.plugin.urlForResourceNamed("hsl.html");
+    // webView.mainFrame().loadRequest(NSURLRequest.requestWithURL(colorPickerHTML));
+
+
+    COScript.currentCOScript().setShouldKeepAround_(true);
+
+    // var webView = WebView.new();
+    var webView = WebView.alloc().initWithFrame(NSMakeRect(0, -24, 240, 150));
+    var windowObject = webView.windowScriptObject();
+    //  Create a delegate
+
+    var delegate = new MochaJSDelegate({
+        "webView:didFinishLoadForFrame:": (function(webView, webFrame){
+
+            //COScript.currentCOScript().setShouldKeepAround_(false);
+            // var app = NSApplication.sharedApplication();
+            // app.displayDialog_withTitle("WebView Loaded!", "Success!");
+            //
+            // log(NSURL.URLWithString(webView.mainFrameURL()).fragment());
+            // log(webView.mainFrameURL());
+            // log(windowObject.evaluateWebScript('getCurrentColor()'));
+
+            windowObject.evaluateWebScript('updateInterfaceWithHexColor("00ff00", 100)');
+
+            if(NSEvent.modifierFlags() == NSAlternateKeyMask){
+                windowObject.evaluateWebScript('updateInterfaceWithHexColor("0000ff", 100)');
+
+            }
+
+            COScript.currentCOScript().setShouldKeepAround_(false);
+            // threadDictionary.removeObjectForKey(identifier);
+        })
+    });
+
+    //  Set WebView's frame load delegate
+
+    webView.setFrameLoadDelegate_(delegate.getClassInstance());
+    webView.setMainFrameURL_(context.plugin.urlForResourceNamed("hsl.html").path());
+
+
+
+    colorPicker.contentView().addSubview(webView);
+
+    colorPicker.center();
+    colorPicker.makeKeyAndOrderFront(nil);
+}
+
+
+
+}
