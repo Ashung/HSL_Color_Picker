@@ -1,18 +1,34 @@
-
-// @import "MochaJSDelegate/MochaJSDelegate.js";
+@import "MochaJSDelegate.js";
 
 var onRun = function(context) {
 
+    var doc = context.document;
+    var selection = context.selection;
+    var initColor = MSColor.whiteColor();
 
-    // var doc = context.document;
-    // var selection = context.selection;
-    // var layer = selection.firstObject();
+    if (selection.count() > 0) {
+        var layer = selection.firstObject();
+        if (layer.style().enabledFills().count() > 0) {
+            if (layer.style().enabledFills().lastObject().fillType() == 0) {
+                initColor = layer.style().enabledFills().lastObject().color();
+            }
+        }
+    }
+
+    // log(initColor)
+
+    var hex = nsColorToHexAndAlpha(initColor).hex,
+        alpha = nsColorToHexAndAlpha(initColor).alpha;
+
+
+    log(hex)
+    log(alpha)
+
 
     //log(layer.style().enabledFills());
     // log(layer.style().enabledFills().lastObject().color().hexValue())
     // fillType()
     // enabledFills()
-    //.color().hexValue()
     // .fills().lastObject().class()
 
     // ColorPicker main window
@@ -20,7 +36,7 @@ var onRun = function(context) {
     var identifier = "com.ashung.hung.hsl_color_picker";
     var threadDictionary = NSThread.mainThread().threadDictionary();
 
-    var colorPicker = NSPanel.alloc().init();
+    var colorPicker = threadDictionary[identifier] ? threadDictionary[identifier] : NSPanel.alloc().init();
     colorPicker.setFrame_display(NSMakeRect(0, 0, 240, 150), false);
     colorPicker.setBackgroundColor(NSColor.colorWithRed_green_blue_alpha(1, 1, 1, 1));
     colorPicker.setTitle(title);
@@ -32,11 +48,39 @@ var onRun = function(context) {
     threadDictionary[identifier] = colorPicker;
 
 
+    COScript.currentCOScript().setShouldKeepAround_(true);
+
     // Add Web View to window
     var webView = WebView.alloc().initWithFrame(NSMakeRect(0, -24, 240, 150));
-    var colorPickerHTML = context.plugin.urlForResourceNamed("hsl.html");
-    webView.mainFrame().loadRequest(NSURLRequest.requestWithURL(colorPickerHTML));
+    // var colorPickerHTML = context.plugin.urlForResourceNamed("hsl.html");
+    // webView.mainFrame().loadRequest(NSURLRequest.requestWithURL(colorPickerHTML));
 
+    var windowObject = webView.windowScriptObject();
+    var delegate = new MochaJSDelegate({
+        "webView:didFinishLoadForFrame:": (function(webView, webFrame) {
+
+            //COScript.currentCOScript().setShouldKeepAround_(false);
+            // var app = NSApplication.sharedApplication();
+            // app.displayDialog_withTitle("WebView Loaded!", "Success!");
+            //
+            // log(NSURL.URLWithString(webView.mainFrameURL()).fragment());
+            // log(webView.mainFrameURL());
+            // log(windowObject.evaluateWebScript('getCurrentColor()'));
+
+            windowObject.evaluateWebScript('updateInterfaceWithHexColor("' + hex + '", ' + alpha + ')');
+
+            if (NSEvent.modifierFlags() == NSAlternateKeyMask) {
+                windowObject.evaluateWebScript('updateInterfaceWithHexColor("' + hex + '", ' + alpha + ')');
+
+            }
+
+            COScript.currentCOScript().setShouldKeepAround_(false);
+
+        })
+    });
+
+    webView.setFrameLoadDelegate_(delegate.getClassInstance());
+    webView.setMainFrameURL_(context.plugin.urlForResourceNamed("hsl.html").path());
 
     // var windowObject = webView.windowScriptObject();
     // webView.setMainFrameURL(colorPickerHTML.path());
@@ -53,4 +97,16 @@ var onRun = function(context) {
     // log("22" + webView.stringByEvaluatingJavaScriptFromString("document.title"));
 
 
+}
+
+function nsColorToHexAndAlpha(nscolor) {
+    var r = parseInt(nscolor.red() * 255),
+        g = parseInt(nscolor.green() * 255),
+        b = parseInt(nscolor.blue() * 255),
+        a = parseInt(nscolor.alpha() * 100);
+    var hex = ('00000' + (r << 16 | g << 8 | b).toString(16)).slice(-6);
+    return {
+        "hex": hex,
+        "alpha": a
+    };
 }
