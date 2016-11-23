@@ -83,6 +83,11 @@ var preview = document.getElementById("color"),
 
 soliderTrackH.style.background = solidBackgroundH();
 
+preview.onclick = function() {
+    window.location.hash = color.r + "-" + color.g + "-" + color.b + "-" + color.a +
+        "-addToDocumentColors";
+}
+
 soliderH.oninput = function() {
     updataInterface();
 }

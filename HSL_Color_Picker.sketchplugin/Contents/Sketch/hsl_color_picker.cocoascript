@@ -4,7 +4,8 @@ var onRun = function(context) {
 
     var doc = context.document;
     var selection = context.selection;
-    var initColor = MSColor.whiteColor();
+    // var initColor = MSColor.whiteColor();
+    var initColor = rgbaToMSColor(255, 0, 0, 100);
 
     // Get selected layer color.
     if (selection.count() > 0) {
@@ -43,7 +44,6 @@ var onRun = function(context) {
         "webView:didFinishLoadForFrame:": (function(webView, webFrame) {
 
             var rgba = nsColorToRGBA(initColor);
-
             windowObject.evaluateWebScript(
                 'updateInterfaceWithRGBA(' + rgba[0] + ', ' + rgba[1] + ', ' + rgba[2] + ', ' + rgba[3] + ')'
             );
@@ -52,10 +52,21 @@ var onRun = function(context) {
 
         }),
         "webView:didChangeLocationWithinPageForFrame:": (function(webView, webFrame) {
-            var colorFromWebView = windowObject.evaluateWebScript("window.location.hash").replace("#", "").split("-");
-            var nscolorFormWebView = rgbaToNscolor(colorFromWebView[0], colorFromWebView[1], colorFromWebView[2], colorFromWebView[3]);
+            var locationHash = windowObject.evaluateWebScript("window.location.hash");
+            if (/^#\d+(-\d+){3}/.test(locationHash)) {
+                var colorFromWebView = locationHash.replace("#", "").split("-");
+                var MSColorFormWebView = rgbaToMSColor(
+                    colorFromWebView[0],
+                    colorFromWebView[1],
+                    colorFromWebView[2],
+                    colorFromWebView[3]
+                );
+                setFillColor(layer, MSColorFormWebView);
 
-            setFillColor(layer, nscolorFormWebView);
+                if (/-addToDocumentColors$/.test(locationHash)) {
+                    addColorToDocumentColors(context, MSColorFormWebView);
+                }
+            }
 
         })
     });
@@ -70,6 +81,10 @@ var onRun = function(context) {
 
 }
 
+/**
+ * @param    NSColor    nscolor
+ * @return   Array      [r[0-255], g[0-255], b[0-255], a[0-100]]
+ */
 function nsColorToRGBA(nscolor) {
     var r = Math.round(nscolor.red() * 255),
         g = Math.round(nscolor.green() * 255),
@@ -78,7 +93,14 @@ function nsColorToRGBA(nscolor) {
     return [r, g, b, a];
 }
 
-function rgbaToNscolor(r, g, b, a) {
+/**
+ * @param    Number    r    [0-255]
+ * @param    Number    g    [0-255]
+ * @param    Number    b    [0-255]
+ * @param    Number    a    [0-100]
+ * @return   MSColor
+ */
+function rgbaToMSColor(r, g, b, a) {
     var color = MSColor.alloc().init();
     color.setRed(r / 255);
     color.setGreen(g / 255);
@@ -87,6 +109,9 @@ function rgbaToNscolor(r, g, b, a) {
     return color;
 }
 
+/**
+ * @param    MSLayer    layer
+ */
 function getFillColor(layer) {
     if (layer.class() == "MSShapeGroup") {
         var fills = layer.style().enabledFills();
@@ -105,6 +130,10 @@ function getFillColor(layer) {
     }
 }
 
+/**
+ * @param    MSLayer    layer
+ * @param    MSColor    color
+ */
 function setFillColor(layer, color) {
     if (layer.class() == "MSShapeGroup") {
         var fills = layer.style().enabledFills();
@@ -119,4 +148,9 @@ function setFillColor(layer, color) {
     if (layer.class() == "MSTextLayer") {
         layer.setTextColor(color);
     }
+}
+
+function addColorToDocumentColors(context, mscolor) {
+    var documentColors = context.document.documentData().assets().colors();
+    documentColors.addObject(mscolor);
 }
