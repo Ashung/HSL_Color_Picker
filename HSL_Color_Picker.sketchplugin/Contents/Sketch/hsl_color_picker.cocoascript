@@ -6,30 +6,16 @@ var onRun = function(context) {
     var selection = context.selection;
     var initColor = MSColor.whiteColor();
 
+    // Get selected layer color.
     if (selection.count() > 0) {
         var layer = selection.firstObject();
-        if (layer.style().enabledFills().count() > 0) {
-            if (layer.style().enabledFills().lastObject().fillType() == 0) {
-                initColor = layer.style().enabledFills().lastObject().color();
-            }
+        if (getFillColor(layer)) {
+            initColor = getFillColor(layer);
         }
     }
 
     // log(initColor)
-
-    var hex = nsColorToHexAndAlpha(initColor).hex,
-        alpha = nsColorToHexAndAlpha(initColor).alpha;
-
-
-    log(hex)
-    log(alpha)
-
-
-    //log(layer.style().enabledFills());
-    // log(layer.style().enabledFills().lastObject().color().hexValue())
-    // fillType()
-    // enabledFills()
-    // .fills().lastObject().class()
+    log("<<<<<" + nsColorToRGBA(initColor))
 
     // ColorPicker main window
     var title = "HSL Color Picker";
@@ -52,29 +38,24 @@ var onRun = function(context) {
 
     // Add Web View to window
     var webView = WebView.alloc().initWithFrame(NSMakeRect(0, -24, 240, 150));
-    // var colorPickerHTML = context.plugin.urlForResourceNamed("hsl.html");
-    // webView.mainFrame().loadRequest(NSURLRequest.requestWithURL(colorPickerHTML));
-
     var windowObject = webView.windowScriptObject();
     var delegate = new MochaJSDelegate({
         "webView:didFinishLoadForFrame:": (function(webView, webFrame) {
 
-            //COScript.currentCOScript().setShouldKeepAround_(false);
-            // var app = NSApplication.sharedApplication();
-            // app.displayDialog_withTitle("WebView Loaded!", "Success!");
-            //
-            // log(NSURL.URLWithString(webView.mainFrameURL()).fragment());
-            // log(webView.mainFrameURL());
-            // log(windowObject.evaluateWebScript('getCurrentColor()'));
+            var rgba = nsColorToRGBA(initColor);
 
-            windowObject.evaluateWebScript('updateInterfaceWithHexColor("' + hex + '", ' + alpha + ')');
-
-            if (NSEvent.modifierFlags() == NSAlternateKeyMask) {
-                windowObject.evaluateWebScript('updateInterfaceWithHexColor("' + hex + '", ' + alpha + ')');
-
-            }
+            windowObject.evaluateWebScript(
+                'updateInterfaceWithRGBA(' + rgba[0] + ', ' + rgba[1] + ', ' + rgba[2] + ', ' + rgba[3] + ')'
+            );
 
             COScript.currentCOScript().setShouldKeepAround_(false);
+
+        }),
+        "webView:didChangeLocationWithinPageForFrame:": (function(webView, webFrame) {
+            var colorFromWebView = windowObject.evaluateWebScript("window.location.hash").replace("#", "").split("-");
+            var nscolorFormWebView = rgbaToNscolor(colorFromWebView[0], colorFromWebView[1], colorFromWebView[2], colorFromWebView[3]);
+
+            setFillColor(layer, nscolorFormWebView);
 
         })
     });
@@ -82,31 +63,60 @@ var onRun = function(context) {
     webView.setFrameLoadDelegate_(delegate.getClassInstance());
     webView.setMainFrameURL_(context.plugin.urlForResourceNamed("hsl.html").path());
 
-    // var windowObject = webView.windowScriptObject();
-    // webView.setMainFrameURL(colorPickerHTML.path());
 
     colorPicker.contentView().addSubview(webView);
-
     colorPicker.center();
     colorPicker.makeKeyAndOrderFront(nil);
 
-
-    // webView.stringByEvaluatingJavaScriptFromString('updateInterfaceWithHexColor("00ff00", 1)');
-    //
-    // log("11" + webView.stringByEvaluatingJavaScriptFromString("getCurrentColor()"));
-    // log("22" + webView.stringByEvaluatingJavaScriptFromString("document.title"));
-
-
 }
 
-function nsColorToHexAndAlpha(nscolor) {
-    var r = parseInt(nscolor.red() * 255),
-        g = parseInt(nscolor.green() * 255),
-        b = parseInt(nscolor.blue() * 255),
-        a = parseInt(nscolor.alpha() * 100);
-    var hex = ('00000' + (r << 16 | g << 8 | b).toString(16)).slice(-6);
-    return {
-        "hex": hex,
-        "alpha": a
-    };
+function nsColorToRGBA(nscolor) {
+    var r = Math.round(nscolor.red() * 255),
+        g = Math.round(nscolor.green() * 255),
+        b = Math.round(nscolor.blue() * 255),
+        a = Math.round(nscolor.alpha() * 100);
+    return [r, g, b, a];
+}
+
+function rgbaToNscolor(r, g, b, a) {
+    var color = MSColor.alloc().init();
+    color.setRed(r / 255);
+    color.setGreen(g / 255);
+    color.setBlue(b / 255);
+    color.setAlpha(a / 100);
+    return color;
+}
+
+function getFillColor(layer) {
+    if (layer.class() == "MSShapeGroup") {
+        var fills = layer.style().enabledFills();
+        if (fills.count() > 0) {
+            if (fills.lastObject().fillType() == 0) {
+                return fills.lastObject().color();
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+    if (layer.class() == "MSTextLayer") {
+        return layer.textColor();
+    }
+}
+
+function setFillColor(layer, color) {
+    if (layer.class() == "MSShapeGroup") {
+        var fills = layer.style().enabledFills();
+        if (fills.count() > 0 && fills.lastObject().fillType() == 0) {
+            fills.lastObject().setColor(color);
+        } else {
+            var fill = layer.style().addStylePartOfType(0);
+            fill.setFillType(0);
+            fills.lastObject().setColor(color);
+        }
+    }
+    if (layer.class() == "MSTextLayer") {
+        layer.setTextColor(color);
+    }
 }

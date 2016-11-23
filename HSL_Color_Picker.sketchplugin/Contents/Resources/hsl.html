@@ -207,17 +207,21 @@ function updataInterface() {
     color.r = rgb[0];
     color.g = rgb[1];
     color.b = rgb[2];
-    color.a = parseInt(soliderA.value);
-    color.hsl = [parseInt(soliderH.value), parseInt(soliderS.value), parseInt(soliderL.value)];
+    color.a = Math.round(soliderA.value);
+    color.hsl = [Math.round(soliderH.value), Math.round(soliderS.value), Math.round(soliderL.value)];
     color.hsb = RGBtoHSB(rgb[0], rgb[1], rgb[2]);
+
+    window.location.hash = color.r + "-" + color.g + "-" + color.b + "-" + color.a;
+    console.log(color);
+    console.log(window.location.hash)
 }
 
-function updateInterfaceWithHexColor(hex, alpha) {
-    var hsl = HEXtoHSL(hex);
+function updateInterfaceWithRGBA(r, g, b, a) {
+    var hsl = RGBtoHSL(r, g, b);
     soliderH.value = hsl[0] || 0;
     soliderS.value = hsl[1] || 100;
     soliderL.value = hsl[2] || 50;
-    soliderA.value = alpha || 100;
+    soliderA.value = a || 100;
     updataInterface();
 }
 
@@ -357,14 +361,10 @@ function HSLtoHEX(h, s, l) {
 }
 
 function HEXtoHSL(hex) {
-    var r = parseInt(hex.substring(0, 2), 16),
-        g = parseInt(hex.substring(2, 4), 16),
-        b = parseInt(hex.substring(4, 6), 16);
+    var r = Math.round(hex.substring(0, 2), 16),
+        g = Math.round(hex.substring(2, 4), 16),
+        b = Math.round(hex.substring(4, 6), 16);
     return RGBtoHSL(r, g, b);
-}
-
-function HSLtoHSB(h, s, l) {
-
 }
 
 </script>
