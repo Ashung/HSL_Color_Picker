@@ -4,8 +4,8 @@ var onRun = function(context) {
 
     var doc = context.document;
     var selection = context.selection;
-    // var initColor = MSColor.whiteColor();
-    var initColor = rgbaToMSColor(255, 0, 0, 100);
+
+    var initColor = NSColor.redColor();
 
     // Get selected layer color.
     if (selection.count() > 0) {
@@ -24,34 +24,42 @@ var onRun = function(context) {
     var threadDictionary = NSThread.mainThread().threadDictionary();
 
     var colorPicker = threadDictionary[identifier] ? threadDictionary[identifier] : NSPanel.alloc().init();
-    colorPicker.setFrame_display(NSMakeRect(0, 0, 240, 150), false);
-    colorPicker.setBackgroundColor(NSColor.colorWithRed_green_blue_alpha(1, 1, 1, 1));
-    colorPicker.setTitle(title);
-    colorPicker.setTitlebarAppearsTransparent(true);
+
+    // Window size
+    colorPicker.setFrame_display(NSMakeRect(0, 0, 240, 150), true);
+
+    colorPicker.setStyleMask(NSTexturedBackgroundWindowMask | NSTitledWindowMask | NSClosableWindowMask);
+    colorPicker.setBackgroundColor(NSColor.whiteColor());
+
+    // Only show close button
     colorPicker.standardWindowButton(NSWindowMiniaturizeButton).setHidden(true);
     colorPicker.standardWindowButton(NSWindowZoomButton).setHidden(true);
+
+    // Titlebar
+    colorPicker.setTitle(title);
+    colorPicker.setTitlebarAppearsTransparent(true);
+
     colorPicker.becomeKeyWindow();
     colorPicker.setLevel(NSFloatingWindowLevel);
+
     threadDictionary[identifier] = colorPicker;
 
-
+    // Long-running script
     COScript.currentCOScript().setShouldKeepAround_(true);
 
     // Add Web View to window
     var webView = WebView.alloc().initWithFrame(NSMakeRect(0, -24, 240, 150));
     var windowObject = webView.windowScriptObject();
     var delegate = new MochaJSDelegate({
-        "webView:didFinishLoadForFrame:": (function(webView, webFrame) {
+        "webView:didFinishLoadForFrame:" : (function(webView, webFrame) {
 
             var rgba = nsColorToRGBA(initColor);
             windowObject.evaluateWebScript(
                 'updateInterfaceWithRGBA(' + rgba[0] + ', ' + rgba[1] + ', ' + rgba[2] + ', ' + rgba[3] + ')'
             );
 
-            COScript.currentCOScript().setShouldKeepAround_(false);
-
         }),
-        "webView:didChangeLocationWithinPageForFrame:": (function(webView, webFrame) {
+        "webView:didChangeLocationWithinPageForFrame:" : (function(webView, webFrame) {
             var locationHash = windowObject.evaluateWebScript("window.location.hash");
             if (/^#\d+(-\d+){3}/.test(locationHash)) {
                 var colorFromWebView = locationHash.replace("#", "").split("-");
@@ -67,13 +75,11 @@ var onRun = function(context) {
                     addColorToDocumentColors(context, MSColorFormWebView);
                 }
             }
-
         })
     });
 
     webView.setFrameLoadDelegate_(delegate.getClassInstance());
     webView.setMainFrameURL_(context.plugin.urlForResourceNamed("hsl.html").path());
-
 
     colorPicker.contentView().addSubview(webView);
     colorPicker.center();
