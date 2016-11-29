@@ -52,6 +52,7 @@
         <label for="color-hex">A</label>
     </div>
 </div>
+<a id="updateInterface" href="#">Refresh</a>
 </div>
 
 <script>
@@ -66,7 +67,8 @@ var color = {
     "hsb" : [0, 100, 100]
 }
 
-var preview = document.getElementById("color"),
+var updateTrigger = document.getElementById("updateInterface"),
+    preview = document.getElementById("color"),
     soliderH = document.getElementById("color-h"),
     soliderS = document.getElementById("color-s"),
     soliderL = document.getElementById("color-l"),
@@ -84,8 +86,16 @@ var preview = document.getElementById("color"),
 soliderTrackH.style.background = solidBackgroundH();
 
 preview.onclick = function() {
-    window.location.hash = color.r + "-" + color.g + "-" + color.b + "-" + color.a +
-        "-addToDocumentColors";
+    window.location.hash = color.r + "-" + color.g + "-" + color.b + "-" + color.a + "-addToDocumentColors";
+}
+
+updateTrigger.onclick = function() {
+    window.location.hash = "updateInterface";
+    console.log(window.location.hash)
+}
+
+document.oncontextmenu = function() {
+    window.event.returnValue = false;
 }
 
 soliderH.oninput = function() {
@@ -223,10 +233,10 @@ function updataInterface() {
 
 function updateInterfaceWithRGBA(r, g, b, a) {
     var hsl = RGBtoHSL(r, g, b);
-    soliderH.value = hsl[0] || 0;
-    soliderS.value = hsl[1] || 100;
-    soliderL.value = hsl[2] || 50;
-    soliderA.value = a || 100;
+    soliderH.value = hsl[0];
+    soliderS.value = hsl[1];
+    soliderL.value = hsl[2];
+    soliderA.value = a;
     updataInterface();
 }
 

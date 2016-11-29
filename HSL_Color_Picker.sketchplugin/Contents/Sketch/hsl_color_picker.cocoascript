@@ -2,18 +2,9 @@
 
 var onRun = function(context) {
 
-    var doc = context.document;
-    var selection = context.selection;
-
-    var initColor = NSColor.redColor();
-
-    // Get selected layer color.
-    if (selection.count() > 0) {
-        var layer = selection.firstObject();
-        if (getFillColor(layer)) {
-            initColor = getFillColor(layer);
-        }
-    }
+    var doc = updateContext(context).doc;
+    var selection = updateContext(context).selection;
+    var initColor = updateContext(context).initColor;
 
     // log(initColor)
     log("<<<<<" + nsColorToRGBA(initColor))
@@ -69,11 +60,23 @@ var onRun = function(context) {
                     colorFromWebView[2],
                     colorFromWebView[3]
                 );
-                setFillColor(layer, MSColorFormWebView);
+
+                var selection = updateContext(context).selection;
+                for (var i = 0; i < selection.count(); i++) {
+                    var layer = selection.objectAtIndex(i);
+                    setFillColor(layer, MSColorFormWebView);
+                }
 
                 if (/-addToDocumentColors$/.test(locationHash)) {
                     addColorToDocumentColors(context, MSColorFormWebView);
                 }
+            }
+
+            if (locationHash == "#updateInterface") {
+                var rgba = nsColorToRGBA(updateContext(context).initColor);
+                windowObject.evaluateWebScript(
+                    'updateInterfaceWithRGBA(' + rgba[0] + ', ' + rgba[1] + ', ' + rgba[2] + ', ' + rgba[3] + ')'
+                );
             }
         })
     });
@@ -85,6 +88,24 @@ var onRun = function(context) {
     colorPicker.center();
     colorPicker.makeKeyAndOrderFront(nil);
 
+}
+
+function updateContext(context) {
+    var initColor = NSColor.redColor();
+    var doc = NSDocumentController.sharedDocumentController().currentDocument();
+    var selection = doc.selectedLayers();
+    // Get selected layer color.
+    if (selection.count() > 0) {
+        var layer = selection.firstObject();
+        if (getFillColor(layer)) {
+            initColor = getFillColor(layer);
+        }
+    }
+    return {
+        doc : doc,
+        selection : selection,
+        initColor : initColor
+    }
 }
 
 /**

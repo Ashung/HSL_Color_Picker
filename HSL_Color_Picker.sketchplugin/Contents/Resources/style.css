@@ -111,3 +111,13 @@ input[type="number"]::-webkit-inner-spin-button {
     display: block;
     margin-top: 4px;
 }
+
+#updateInterface {
+    /*position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    background: #f00;
+    height: 100%;
+    width: 100%;*/
+}
