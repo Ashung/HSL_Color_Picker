@@ -10,16 +10,21 @@
     "bundleVersion": 1,
     "commands": [
         {
-            "name": "HSL Color Picker",
+            "name": "Color Picker",
             "identifier": "hsl_color_picker",
+            "handler": "onRun",
             "script": "hsl_color_picker.cocoascript"
+        },
+        {
+            "name": "Luminosity ++"
+            "identifier": "more_dark",
         }
     ],
     "menu": {
-        "isRoot": true,
+        "isRoot": false,
         "title": "HSL Color Picker",
         "items": [
-            "hsl_color_picker"
+            "hsl_color_picker",
         ]
     }
 }

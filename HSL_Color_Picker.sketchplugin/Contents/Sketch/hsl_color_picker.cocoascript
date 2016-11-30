@@ -7,7 +7,7 @@ var onRun = function(context) {
     var initColor = updateContext(context).initColor;
 
     // log(initColor)
-    log("<<<<<" + nsColorToRGBA(initColor))
+    log("<<<<<" + nsColorToRGBA(initColor));
 
     // ColorPicker main window
     var title = "HSL Color Picker";
@@ -90,6 +90,10 @@ var onRun = function(context) {
 
 }
 
+/**
+ * @param    context
+ * @return   Object      {doc, selection, initColor}
+ */
 function updateContext(context) {
     var initColor = NSColor.redColor();
     var doc = NSDocumentController.sharedDocumentController().currentDocument();
