@@ -10,14 +10,46 @@
     "bundleVersion": 1,
     "commands": [
         {
-            "name": "Color Picker",
+            "name": "Color Picker 🎨",
             "identifier": "hsl_color_picker",
             "handler": "onRun",
             "script": "hsl_color_picker.cocoascript"
         },
         {
-            "name": "Luminosity ++"
+            "name": "Hue Plus (H+10)",
+            "identifier": "hue_plus",
+            "handler": "huePlus",
+            "script": "hsl_color_picker.cocoascript"
+        },
+        {
+            "name": "Hue Minus (H-10)",
+            "identifier": "hue_minus",
+            "handler": "hueMinus",
+            "script": "hsl_color_picker.cocoascript"
+        },
+        {
+            "name": "More Dark (L-5) 👦🏿",
             "identifier": "more_dark",
+            "handler": "moreDark",
+            "script": "hsl_color_picker.cocoascript"
+        },
+        {
+            "name": "More Light (L+5) 👦🏼",
+            "identifier": "more_light",
+            "handler": "moreLight",
+            "script": "hsl_color_picker.cocoascript"
+        },
+        {
+            "name": "More Bright (S+5) 🙈",
+            "identifier": "more_bright",
+            "handler": "moreBright",
+            "script": "hsl_color_picker.cocoascript"
+        },
+        {
+            "name": "More Gray (S-5) 🙉",
+            "identifier": "more_gray",
+            "handler": "moreGray",
+            "script": "hsl_color_picker.cocoascript"
         }
     ],
     "menu": {
@@ -25,6 +57,13 @@
         "title": "HSL Color Picker",
         "items": [
             "hsl_color_picker",
+            "-",
+            "hue_plus",
+            "hue_minus",
+            "more_bright",
+            "more_gray",
+            "more_light",
+            "more_dark"
         ]
     }
 }
