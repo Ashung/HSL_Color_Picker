@@ -4,10 +4,10 @@
     "author": "Ashung Hung",
     "email": "Ashung.hung@gmail.com",
     "homepage": "https://github.com/Ashung/HSL_Color_Picker",
-    "version": "0.1",
+    "version": "1.0",
     "identifier": "com.ashung.hung.hsl_color_picker",
-    "compatibleVersion": 3,
-    "bundleVersion": 1,
+    "compatibleVersion": "3",
+    "bundleVersion": "1",
     "commands": [
         {
             "name": "Color Picker 🎨",

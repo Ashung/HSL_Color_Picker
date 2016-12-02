@@ -4,10 +4,7 @@ var onRun = function(context) {
 
     var doc = updateContext().doc;
     var selection = updateContext().selection;
-    var initColor = updateContext().initColor;
-
-    // log(initColor)
-    log("<<<<<" + nsColorToRGBA(initColor));
+    var initColor = updateContext().initColor ? updateContext().initColor : MSColor.colorWithRed_green_blue_alpha(1, 0, 0, 1);;
 
     // ColorPicker main window
     var title = "HSL Color Picker";
@@ -17,7 +14,9 @@ var onRun = function(context) {
     var colorPicker = threadDictionary[identifier] ? threadDictionary[identifier] : NSPanel.alloc().init();
 
     // Window size
-    colorPicker.setFrame_display(NSMakeRect(0, 0, 240, 150), true);
+    var windowWidth = 240,
+        windowHeight = 180;
+    colorPicker.setFrame_display(NSMakeRect(0, 0, windowWidth, windowHeight), true);
 
     colorPicker.setStyleMask(NSTexturedBackgroundWindowMask | NSTitledWindowMask | NSClosableWindowMask);
     colorPicker.setBackgroundColor(NSColor.whiteColor());
@@ -39,12 +38,12 @@ var onRun = function(context) {
     COScript.currentCOScript().setShouldKeepAround_(true);
 
     // Add Web View to window
-    var webView = WebView.alloc().initWithFrame(NSMakeRect(0, -24, 240, 150));
+    var webView = WebView.alloc().initWithFrame(NSMakeRect(0, -24, windowWidth, windowHeight));
     var windowObject = webView.windowScriptObject();
     var delegate = new MochaJSDelegate({
         "webView:didFinishLoadForFrame:" : (function(webView, webFrame) {
 
-            var rgba = nsColorToRGBA(initColor);
+            var rgba = MSColorToRGBA(initColor);
             windowObject.evaluateWebScript(
                 'updateInterfaceWithRGBA(' + rgba[0] + ', ' + rgba[1] + ', ' + rgba[2] + ', ' + rgba[3] + ')'
             );
@@ -70,13 +69,37 @@ var onRun = function(context) {
                 if (/-addToDocumentColors$/.test(locationHash)) {
                     addColorToDocumentColors(context, MSColorFormWebView);
                 }
+
+                if (/-copyColorAsHEX$/.test(locationHash)) {
+                    var hex = windowObject.evaluateWebScript("textHex.value");
+                    copyToClipBoard("#" + hex);
+                }
+
+                if (/-copyColorAsRGBA$/.test(locationHash)) {
+                    var r = colorFromWebView[0],
+                        g = colorFromWebView[1],
+                        b = colorFromWebView[2],
+                        a = windowObject.evaluateWebScript("textA.value");
+                    copyToClipBoard("rgba(" + r + ", " + g + ", " + b + ", " + (parseInt(a) / 100) + ")");
+                }
+
+                if (/-copyColorAsHSLA$/.test(locationHash)) {
+                    var h = windowObject.evaluateWebScript("textH.value"),
+                        s = windowObject.evaluateWebScript("textS.value"),
+                        l = windowObject.evaluateWebScript("textL.value"),
+                        a = windowObject.evaluateWebScript("textA.value");
+                    copyToClipBoard("hsla(" + h + ", " + s + "%, " + l + "%, " + (parseInt(a) / 100) + ")");
+                }
+
             }
 
             if (locationHash == "#updateInterface") {
-                var rgba = nsColorToRGBA(updateContext().initColor);
-                windowObject.evaluateWebScript(
-                    'updateInterfaceWithRGBA(' + rgba[0] + ', ' + rgba[1] + ', ' + rgba[2] + ', ' + rgba[3] + ')'
-                );
+                if (updateContext().initColor) {
+                    var rgba = MSColorToRGBA(updateContext().initColor);
+                    windowObject.evaluateWebScript(
+                        'updateInterfaceWithRGBA(' + rgba[0] + ', ' + rgba[1] + ', ' + rgba[2] + ', ' + rgba[3] + ')'
+                    );
+                }
             }
         })
     });
@@ -170,14 +193,13 @@ function changeColor(context, keyword) {
  * @return   Object      {doc, selection, initColor}
  */
 function updateContext() {
-    var initColor = NSColor.redColor();
     var doc = NSDocumentController.sharedDocumentController().currentDocument();
     var selection = doc.selectedLayers();
     // Get selected layer color.
     if (selection.count() > 0) {
         var layer = selection.firstObject();
         if (getFillColor(layer)) {
-            initColor = getFillColor(layer);
+            var initColor = getFillColor(layer);
         }
     }
     return {
@@ -188,14 +210,14 @@ function updateContext() {
 }
 
 /**
- * @param    NSColor    nscolor
+ * @param    MSColor    mscolor
  * @return   Array      [r[0-255], g[0-255], b[0-255], a[0-100]]
  */
-function nsColorToRGBA(nscolor) {
-    var r = Math.round(nscolor.red() * 255),
-        g = Math.round(nscolor.green() * 255),
-        b = Math.round(nscolor.blue() * 255),
-        a = Math.round(nscolor.alpha() * 100);
+function MSColorToRGBA(mscolor) {
+    var r = Math.round(mscolor.red() * 255),
+        g = Math.round(mscolor.green() * 255),
+        b = Math.round(mscolor.blue() * 255),
+        a = Math.round(mscolor.alpha() * 100);
     return [r, g, b, a];
 }
 
@@ -234,9 +256,9 @@ function MSColorToHSL(mscolor) {
         var d = max - min;
         s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
         switch(max){
-            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-            case g: h = (b - r) / d + 2; break;
-            case b: h = (r - g) / d + 4; break;
+            case r : h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g : h = (b - r) / d + 2; break;
+            case b : h = (r - g) / d + 4; break;
         }
         h /= 6;
     }
@@ -329,4 +351,14 @@ function setFillColor(layer, color) {
 function addColorToDocumentColors(context, mscolor) {
     var documentColors = context.document.documentData().assets().colors();
     documentColors.addObject(mscolor);
+    context.document.showMessage("The color has been added to document colors.");
+}
+
+/**
+ * @param    String    str
+ */
+function copyToClipBoard(str) {
+    var pboard = NSPasteboard.generalPasteboard();
+    pboard.clearContents();
+    pboard.setString_forType_(str, NSStringPboardType);
 }

@@ -8,9 +8,9 @@
 <body>
 <div class="container">
 <div class="preview">
-    <div id="color">
-        <a href="#" class="add" title="Add to Document Colors">+</a>
-    </div>
+    <a id="color" href="#" title="Refresh">
+        <span class="refresh">+</span>
+    </a>
 </div>
 <div class="solider-container">
     <div class="solider">
@@ -30,7 +30,7 @@
         <input type="range" id="color-a" name="a" min="0" max="100" step="1" value="100">
     </div>
 </div>
-<div class="values">
+<div class="clearfix values">
     <div class="value value-hex">
         <input type="text" id="text-hex" value="000000" maxlength="7">
         <label for="color-hex">HEX</label>
@@ -52,7 +52,15 @@
         <label for="color-hex">A</label>
     </div>
 </div>
-<a id="updateInterface" href="#">Refresh</a>
+<div class="clearfix bottomActions">
+    <a id="addColorToDocumentColors" href="#" title="Add to Document Colors">+</a>
+    <span id="copyColorAs">
+        Copy Color As
+        <a id="copyColorAsHEX" href="#">HEX</a>
+        <a id="copyColorAsRGBA" href="#">RGBA</a>
+        <a id="copyColorAsHSLA" href="#">HSLA</a>
+    </span>
+</div>
 </div>
 
 <script>
@@ -67,7 +75,10 @@ var color = {
     "hsb" : [0, 100, 100]
 }
 
-var updateTrigger = document.getElementById("updateInterface"),
+var addColorToDocumentColors = document.getElementById("addColorToDocumentColors"),
+    copyColorAsHEX = document.getElementById("copyColorAsHEX"),
+    copyColorAsRGBA = document.getElementById("copyColorAsRGBA"),
+    copyColorAsHSLA = document.getElementById("copyColorAsHSLA"),
     preview = document.getElementById("color"),
     soliderH = document.getElementById("color-h"),
     soliderS = document.getElementById("color-s"),
@@ -86,14 +97,31 @@ var updateTrigger = document.getElementById("updateInterface"),
 soliderTrackH.style.background = solidBackgroundH();
 
 preview.onclick = function() {
-    window.location.hash = color.r + "-" + color.g + "-" + color.b + "-" + color.a + "-addToDocumentColors";
-}
-
-updateTrigger.onclick = function() {
     window.location.hash = "updateInterface";
-    console.log(window.location.hash)
+    return false;
 }
 
+addColorToDocumentColors.onclick = function() {
+    window.location.hash = color.r + "-" + color.g + "-" + color.b + "-" + color.a + "-addToDocumentColors";
+    return false;
+}
+
+copyColorAsHEX.onclick = function() {
+    window.location.hash = color.r + "-" + color.g + "-" + color.b + "-" + color.a + "-copyColorAsHEX";
+    return false;
+}
+
+copyColorAsRGBA.onclick = function() {
+    window.location.hash = color.r + "-" + color.g + "-" + color.b + "-" + color.a + "-copyColorAsRGBA";
+    return false;
+}
+
+copyColorAsHSLA.onclick = function() {
+    window.location.hash = color.r + "-" + color.g + "-" + color.b + "-" + color.a + "-copyColorAsHSLA";
+    return false;
+}
+
+// Disable right-click menu
 document.oncontextmenu = function() {
     window.event.returnValue = false;
 }
