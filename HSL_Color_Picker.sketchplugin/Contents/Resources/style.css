@@ -152,6 +152,12 @@ input[type="number"]::-webkit-inner-spin-button {
 #copyColorAs {
     float: right;
 }
-#copyColorAs a:link, #copyColorAs a:visited {
+button {
+    -webkit-appearance: none;
+    border: none;
+    background: none;
+    padding: 0;
+    margin: 0;
+    color: inherit;
     text-decoration: underline;
 }

@@ -72,7 +72,11 @@ var onRun = function(context) {
 
                 if (/-copyColorAsHEX$/.test(locationHash)) {
                     var hex = windowObject.evaluateWebScript("textHex.value");
-                    copyToClipBoard("#" + hex);
+                    copyToClipBoard(
+                        context,
+                        "HEX color code is copyed.",
+                        "#" + hex
+                    );
                 }
 
                 if (/-copyColorAsRGBA$/.test(locationHash)) {
@@ -80,7 +84,11 @@ var onRun = function(context) {
                         g = colorFromWebView[1],
                         b = colorFromWebView[2],
                         a = windowObject.evaluateWebScript("textA.value");
-                    copyToClipBoard("rgba(" + r + ", " + g + ", " + b + ", " + (parseInt(a) / 100) + ")");
+                    copyToClipBoard(
+                        context,
+                        "RGBA color code is copyed.",
+                        "rgba(" + r + ", " + g + ", " + b + ", " + (parseInt(a) / 100) + ")"
+                    );
                 }
 
                 if (/-copyColorAsHSLA$/.test(locationHash)) {
@@ -88,7 +96,11 @@ var onRun = function(context) {
                         s = windowObject.evaluateWebScript("textS.value"),
                         l = windowObject.evaluateWebScript("textL.value"),
                         a = windowObject.evaluateWebScript("textA.value");
-                    copyToClipBoard("hsla(" + h + ", " + s + "%, " + l + "%, " + (parseInt(a) / 100) + ")");
+                    copyToClipBoard(
+                        context,
+                        "HSLA color code is copyed.",
+                        "hsla(" + h + ", " + s + "%, " + l + "%, " + (parseInt(a) / 100) + ")"
+                    );
                 }
 
             }
@@ -136,6 +148,32 @@ var moreBright = function(context) {
 var moreGray = function(context) {
     changeColor(context, "gray");
 }
+
+var website = function(context) {
+    openUrlInBrowser("https://github.com/Ashung/HSL_Color_Picker");
+};
+
+var reportIssue = function(context) {
+    openUrlInBrowser("https://github.com/Ashung/HSL_Color_Picker/issues");
+};
+
+var donateViaPaypal = function() {
+    openUrlInBrowser("https://www.paypal.me/ashung/2");
+};
+
+var donateViaWechat = function() {
+    openUrlInBrowser("http://ashung.github.io/Automate-Sketch/css/donate_wechat_rmb_10.png");
+};
+
+var donateViaAlipay = function() {
+    openUrlInBrowser("http://ashung.github.io/Automate-Sketch/css/donate_alipay_rmb_10.png");
+};
+
+function openUrlInBrowser(url) {
+    NSWorkspace.sharedWorkspace().openURL(NSURL.URLWithString(url));
+}
+
+
 
 /**
  * @param    context
@@ -355,10 +393,13 @@ function addColorToDocumentColors(context, mscolor) {
 }
 
 /**
+ * @param    context
+ * @param    String    message
  * @param    String    str
  */
-function copyToClipBoard(str) {
+function copyToClipBoard(context, message, str) {
     var pboard = NSPasteboard.generalPasteboard();
     pboard.clearContents();
     pboard.setString_forType_(str, NSStringPboardType);
+    context.document.showMessage(message);
 }

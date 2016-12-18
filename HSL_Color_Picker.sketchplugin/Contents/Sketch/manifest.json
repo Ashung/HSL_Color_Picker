@@ -4,7 +4,7 @@
     "author": "Ashung Hung",
     "email": "Ashung.hung@gmail.com",
     "homepage": "https://github.com/Ashung/HSL_Color_Picker",
-    "version": "1.0",
+    "version": "1.1",
     "identifier": "com.ashung.hung.hsl_color_picker",
     "compatibleVersion": "3",
     "bundleVersion": "1",
@@ -16,13 +16,13 @@
             "script": "hsl_color_picker.cocoascript"
         },
         {
-            "name": "Hue Plus (H+10)",
+            "name": "Hue Plus (H+10) 🏳️‍🌈",
             "identifier": "hue_plus",
             "handler": "huePlus",
             "script": "hsl_color_picker.cocoascript"
         },
         {
-            "name": "Hue Minus (H-10)",
+            "name": "Hue Minus (H-10) 🏳️‍🌈",
             "identifier": "hue_minus",
             "handler": "hueMinus",
             "script": "hsl_color_picker.cocoascript"
@@ -50,6 +50,36 @@
             "identifier": "more_gray",
             "handler": "moreGray",
             "script": "hsl_color_picker.cocoascript"
+        },
+        {
+            "name": "Web Site 🌏",
+            "identifier": "web_site",
+            "handler": "website",
+            "script": "hsl_color_picker.cocoascript"
+        },
+        {
+            "name": "Report Issue 🐞",
+            "identifier": "report_issue",
+            "handler": "reportIssue",
+            "script": "hsl_color_picker.cocoascript"
+        },
+        {
+            "name": "Donate via PayPal 💵 ",
+            "identifier": "donate_via_paypal",
+            "handler": "donateViaPaypal",
+            "script": "hsl_color_picker.cocoascript"
+        },
+        {
+            "name": "微信扫码打赏 💵 ",
+            "identifier": "donate_via_wechat",
+            "handler": "donateViaWechat",
+            "script": "hsl_color_picker.cocoascript"
+        },
+        {
+            "name": "支付宝扫码打赏 💵 ",
+            "identifier": "donate_via_alipay",
+            "handler": "donateViaAlipay",
+            "script": "hsl_color_picker.cocoascript"
         }
     ],
     "menu": {
@@ -63,7 +93,19 @@
             "more_bright",
             "more_gray",
             "more_light",
-            "more_dark"
+            "more_dark",
+            "-",
+            {
+                "title": "Help",
+                "items": [
+                    "web_site",
+                    "report_issue",
+                    "-",
+                    "donate_via_paypal",
+                    "donate_via_wechat",
+                    "donate_via_alipay"
+                ]
+            }
         ]
     }
 }
