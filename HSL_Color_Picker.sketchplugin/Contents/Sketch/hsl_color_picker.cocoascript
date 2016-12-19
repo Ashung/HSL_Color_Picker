@@ -378,7 +378,7 @@ function setFillColor(layer, color) {
         } else {
             var fill = layer.style().addStylePartOfType(0);
             fill.setFillType(0);
-            fills.lastObject().setColor(color);
+            fill.setColor(color);
         }
     }
     if (layer.class() == "MSTextLayer") {
