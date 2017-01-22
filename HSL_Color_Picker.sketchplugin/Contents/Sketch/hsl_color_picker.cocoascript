@@ -11,7 +11,11 @@ var onRun = function(context) {
     var identifier = "com.ashung.hung.hsl_color_picker";
     var threadDictionary = NSThread.mainThread().threadDictionary();
 
-    var colorPicker = threadDictionary[identifier] ? threadDictionary[identifier] : NSPanel.alloc().init();
+    if (threadDictionary[identifier]) {
+        return;
+    }
+
+    var colorPicker = NSPanel.alloc().init();
 
     // Window size
     var windowWidth = 240,
@@ -122,6 +126,15 @@ var onRun = function(context) {
     colorPicker.contentView().addSubview(webView);
     colorPicker.center();
     colorPicker.makeKeyAndOrderFront(nil);
+
+    // Close Window
+    var closeButton = colorPicker.standardWindowButton(NSWindowCloseButton);
+    closeButton.setCOSJSTargetFunction(function(sender) {
+        COScript.currentCOScript().setShouldKeepAround(false);
+        threadDictionary.removeObjectForKey(identifier);
+        colorPicker.close();
+    });
+    closeButton.setAction("callAction:");
 
 }
 
