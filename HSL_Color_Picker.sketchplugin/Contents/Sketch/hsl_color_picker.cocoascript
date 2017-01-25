@@ -245,7 +245,7 @@ function changeColor(context, keyword) {
  */
 function updateContext() {
     var doc = NSDocumentController.sharedDocumentController().currentDocument();
-    var selection = doc.selectedLayers();
+    var selection = doc.selectedLayers().layers();
     // Get selected layer color.
     if (selection.count() > 0) {
         var layer = selection.firstObject();
