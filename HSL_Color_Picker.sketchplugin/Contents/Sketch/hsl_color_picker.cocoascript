@@ -15,11 +15,10 @@ var onRun = function(context) {
         return;
     }
 
-    var colorPicker = NSPanel.alloc().init();
-
     // Window size
     var windowWidth = 240,
         windowHeight = 180;
+    var colorPicker = NSPanel.alloc().init();
     colorPicker.setFrame_display(NSMakeRect(0, 0, windowWidth, windowHeight), true);
 
     colorPicker.setStyleMask(NSTexturedBackgroundWindowMask | NSTitledWindowMask | NSClosableWindowMask);
@@ -45,6 +44,7 @@ var onRun = function(context) {
     var webView = WebView.alloc().initWithFrame(NSMakeRect(0, -24, windowWidth, windowHeight));
     var windowObject = webView.windowScriptObject();
     var delegate = new MochaJSDelegate({
+
         "webView:didFinishLoadForFrame:" : (function(webView, webFrame) {
 
             var rgba = MSColorToRGBA(initColor);
@@ -53,9 +53,13 @@ var onRun = function(context) {
             );
 
         }),
+
         "webView:didChangeLocationWithinPageForFrame:" : (function(webView, webFrame) {
+
             var locationHash = windowObject.evaluateWebScript("window.location.hash");
+
             if (/^#\d+(-\d+){3}/.test(locationHash)) {
+
                 var colorFromWebView = locationHash.replace("#", "").split("-");
                 var MSColorFormWebView = rgbaToMSColor(
                     colorFromWebView[0],
@@ -70,38 +74,38 @@ var onRun = function(context) {
                     setFillColor(layer, MSColorFormWebView);
                 }
 
-                if (/-addToDocumentColors$/.test(locationHash)) {
-                    addColorToDocumentColors(context, MSColorFormWebView);
+                if (/-addToDocumentColors-\d{13}$/.test(locationHash)) {
+                    addColorToDocumentColors(updateContext().doc, MSColorFormWebView);
                 }
 
-                if (/-copyColorAsHEX$/.test(locationHash)) {
+                if (/-copyColorAsHEX-\d{13}$/.test(locationHash)) {
                     var hex = windowObject.evaluateWebScript("textHex.value");
                     copyToClipBoard(
-                        context,
+                        updateContext().doc,
                         "HEX color code is copyed.",
                         "#" + hex
                     );
                 }
 
-                if (/-copyColorAsRGBA$/.test(locationHash)) {
+                if (/-copyColorAsRGBA-\d{13}$/.test(locationHash)) {
                     var r = colorFromWebView[0],
                         g = colorFromWebView[1],
                         b = colorFromWebView[2],
                         a = windowObject.evaluateWebScript("textA.value");
                     copyToClipBoard(
-                        context,
+                        updateContext().doc,
                         "RGBA color code is copyed.",
                         "rgba(" + r + ", " + g + ", " + b + ", " + (parseInt(a) / 100) + ")"
                     );
                 }
 
-                if (/-copyColorAsHSLA$/.test(locationHash)) {
+                if (/-copyColorAsHSLA-\d{13}$/.test(locationHash)) {
                     var h = windowObject.evaluateWebScript("textH.value"),
                         s = windowObject.evaluateWebScript("textS.value"),
                         l = windowObject.evaluateWebScript("textL.value"),
                         a = windowObject.evaluateWebScript("textA.value");
                     copyToClipBoard(
-                        context,
+                        updateContext().doc,
                         "HSLA color code is copyed.",
                         "hsla(" + h + ", " + s + "%, " + l + "%, " + (parseInt(a) / 100) + ")"
                     );
@@ -398,10 +402,10 @@ function setFillColor(layer, color) {
     }
 }
 
-function addColorToDocumentColors(context, mscolor) {
-    var documentColors = context.document.documentData().assets().colors();
+function addColorToDocumentColors(document, mscolor) {
+    var documentColors = document.documentData().assets().colors();
     documentColors.addObject(mscolor);
-    context.document.showMessage("The color has been added to document colors.");
+    document.showMessage("The color has been added to document colors.");
 }
 
 /**
@@ -409,9 +413,9 @@ function addColorToDocumentColors(context, mscolor) {
  * @param    String    message
  * @param    String    str
  */
-function copyToClipBoard(context, message, str) {
+function copyToClipBoard(document, message, str) {
     var pboard = NSPasteboard.generalPasteboard();
     pboard.clearContents();
     pboard.setString_forType_(str, NSStringPboardType);
-    context.document.showMessage(message);
+    document.showMessage(message);
 }

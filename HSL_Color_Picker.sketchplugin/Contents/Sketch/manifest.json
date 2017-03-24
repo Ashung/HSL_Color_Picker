@@ -4,80 +4,106 @@
     "author": "Ashung Hung",
     "email": "Ashung.hung@gmail.com",
     "homepage": "https://github.com/Ashung/HSL_Color_Picker",
-    "version": "1.3.1",
+    "downloadURL": "https://github.com/Ashung/HSL_Color_Picker/archive/master.zip",
+    "updateURL": "https://github.com/Ashung/HSL_Color_Picker/archive/master.zip",
+    "version": "1.5",
     "identifier": "com.ashung.hung.hsl_color_picker",
     "compatibleVersion": "3",
     "bundleVersion": "1",
     "commands": [
         {
-            "name": "Color Picker 🎨",
+            "name": "HSL Color Picker 🎨",
             "identifier": "hsl_color_picker",
+            "description": "Show HSL color picker window.",
+            "icon": "icons/hsl_icon.png",
             "handler": "onRun",
             "script": "hsl_color_picker.cocoascript"
         },
         {
-            "name": "Hue Plus (H+10) 🏳️‍🌈",
+            "name": "Hue Plus 🏳️‍🌈",
             "identifier": "hue_plus",
+            "description": "Hue +10",
+            "icon": "icons/hsl_h.png",
             "handler": "huePlus",
             "script": "hsl_color_picker.cocoascript"
         },
         {
-            "name": "Hue Minus (H-10) 🏳️‍🌈",
+            "name": "Hue Minus 🏳️‍🌈",
             "identifier": "hue_minus",
+            "description": "Hue -10",
+            "icon": "icons/hsl_h.png",
             "handler": "hueMinus",
             "script": "hsl_color_picker.cocoascript"
         },
         {
-            "name": "More Dark (L-5) 👦🏿",
+            "name": "More Dark 👦🏿",
             "identifier": "more_dark",
+            "description": "Lightness -5",
+            "icon": "icons/hsl_l.png",
             "handler": "moreDark",
             "script": "hsl_color_picker.cocoascript"
         },
         {
-            "name": "More Light (L+5) 👦🏼",
+            "name": "More Light 👦🏼",
             "identifier": "more_light",
+            "description": "Lightness +5",
+            "icon": "icons/hsl_l.png",
             "handler": "moreLight",
             "script": "hsl_color_picker.cocoascript"
         },
         {
-            "name": "More Bright (S+5) 🙈",
+            "name": "More Bright 🙈",
             "identifier": "more_bright",
+            "description": "Saturation +5",
+            "icon": "icons/hsl_s.png",
             "handler": "moreBright",
             "script": "hsl_color_picker.cocoascript"
         },
         {
-            "name": "More Gray (S-5) 🙉",
+            "name": "More Gray 🙉",
             "identifier": "more_gray",
+            "description": "Saturation -5",
+            "icon": "icons/hsl_s.png",
             "handler": "moreGray",
             "script": "hsl_color_picker.cocoascript"
         },
         {
             "name": "Web Site 🌏",
             "identifier": "web_site",
+            "description": "Visit the project home at GitHub.",
+            "icon": "icons/hsl_github.png",
             "handler": "website",
             "script": "hsl_color_picker.cocoascript"
         },
         {
             "name": "Report Issue 🐞",
             "identifier": "report_issue",
+            "description": "Visit the project home at GitHub and open a issue.",
+            "icon": "icons/hsl_github.png",
             "handler": "reportIssue",
             "script": "hsl_color_picker.cocoascript"
         },
         {
             "name": "Donate via PayPal 💵 ",
             "identifier": "donate_via_paypal",
+            "description": "Donate via PayPal.",
+            "icon": "icons/hsl_paypal.png",
             "handler": "donateViaPaypal",
             "script": "hsl_color_picker.cocoascript"
         },
         {
-            "name": "微信扫码打赏 💵 ",
+            "name": "Donate via WeChat 💵 ",
             "identifier": "donate_via_wechat",
+            "description": "Donate via WeChat.",
+            "icon": "icons/hsl_wechat.png",
             "handler": "donateViaWechat",
             "script": "hsl_color_picker.cocoascript"
         },
         {
-            "name": "支付宝扫码打赏 💵 ",
+            "name": "Donate via Alipay 💵 ",
             "identifier": "donate_via_alipay",
+            "description": "Donate via Alipay.",
+            "icon": "icons/hsl_alipay.png",
             "handler": "donateViaAlipay",
             "script": "hsl_color_picker.cocoascript"
         }
