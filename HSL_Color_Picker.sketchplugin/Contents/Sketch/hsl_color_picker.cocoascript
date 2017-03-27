@@ -4,12 +4,11 @@ var onRun = function(context) {
 
     var doc = updateContext().doc;
     var selection = updateContext().selection;
-    var initColor = updateContext().initColor;
+    var initColor = updateContext().initColor || MSColor.colorWithRed_green_blue_alpha(1, 0, 0, 1);
 
     // ColorPicker main window
-    var title = "HSL Color Picker";
-    var identifier = "com.ashung.hung.hsl_color_picker";
     var threadDictionary = NSThread.mainThread().threadDictionary();
+    var identifier = "com.ashung.hung.hsl_color_picker";
 
     if (threadDictionary[identifier]) {
         return;
@@ -29,7 +28,7 @@ var onRun = function(context) {
     colorPicker.standardWindowButton(NSWindowZoomButton).setHidden(true);
 
     // Titlebar
-    colorPicker.setTitle(title);
+    colorPicker.setTitle("HSL Color Picker");
     colorPicker.setTitlebarAppearsTransparent(true);
 
     colorPicker.becomeKeyWindow();
@@ -142,6 +141,22 @@ var onRun = function(context) {
 
 }
 
+var onSelectionChanged = function(context) {
+    var threadDictionary = NSThread.mainThread().threadDictionary();
+    var identifier = "com.ashung.hung.hsl_color_picker";
+    if (threadDictionary[identifier]) {
+        if (updateContext().initColor && updateContext().selection.count() == 1) {
+            var initColor = updateContext().initColor;
+            var rgba = MSColorToRGBA(initColor);
+            var webView = threadDictionary[identifier].contentView().subviews().firstObject();
+            var windowObject = webView.windowScriptObject();
+            windowObject.evaluateWebScript(
+                'updateInterfaceWithRGBA(' + rgba[0] + ', ' + rgba[1] + ', ' + rgba[2] + ', ' + rgba[3] + ')'
+            );
+        }
+    }
+};
+
 var huePlus = function(context) {
     changeColor(context, "huePlus");
 }
@@ -247,7 +262,7 @@ function changeColor(context, keyword) {
  */
 function updateContext() {
     var doc = NSDocumentController.sharedDocumentController().currentDocument();
-    var initColor = MSColor.colorWithRed_green_blue_alpha(1, 0, 0, 1);
+    var initColor;
     var selection = doc.selectedLayers().layers();
     // Get selected layer color.
     if (selection.count() > 0) {

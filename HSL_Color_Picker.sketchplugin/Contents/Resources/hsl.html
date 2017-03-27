@@ -7,11 +7,7 @@
 </head>
 <body>
 <div class="container">
-<div class="preview">
-    <button id="color" title="Refresh">
-        <span class="refresh">+</span>
-    </button>
-</div>
+<div class="preview"><div id="color"></div></div>
 <div class="solider-container">
     <div class="solider">
         <div id="solider-h"></div>
@@ -96,11 +92,6 @@ var addColorToDocumentColors = document.getElementById("addColorToDocumentColors
 
 soliderTrackH.style.background = solidBackgroundH();
 
-preview.onclick = function() {
-    window.location.hash = "updateInterface";
-    return false;
-}
-
 addColorToDocumentColors.onclick = function() {
     window.location.hash = color.r + "-" + color.g + "-" + color.b + "-" + color.a + "-addToDocumentColors-" + new Date().getTime();
     return false;
@@ -122,9 +113,9 @@ copyColorAsHSLA.onclick = function() {
 }
 
 // Disable right-click menu
-document.oncontextmenu = function() {
-    window.event.returnValue = false;
-}
+// document.oncontextmenu = function() {
+//     window.event.returnValue = false;
+// }
 
 soliderH.oninput = function() {
     updataInterface();

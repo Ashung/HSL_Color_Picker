@@ -6,7 +6,7 @@
     "homepage": "https://github.com/Ashung/HSL_Color_Picker",
     "downloadURL": "https://github.com/Ashung/HSL_Color_Picker/archive/master.zip",
     "updateURL": "https://github.com/Ashung/HSL_Color_Picker/archive/master.zip",
-    "version": "1.5",
+    "version": "2.0",
     "identifier": "com.ashung.hung.hsl_color_picker",
     "compatibleVersion": "3",
     "bundleVersion": "1",
@@ -16,7 +16,12 @@
             "identifier": "hsl_color_picker",
             "description": "Show HSL color picker window.",
             "icon": "icons/hsl_icon.png",
-            "handler": "onRun",
+            "handlers": {
+                "run": "onRun",
+                "actions": {
+                    "SelectionChanged.finish": "onSelectionChanged"
+                }
+            },
             "script": "hsl_color_picker.cocoascript"
         },
         {
