@@ -113,9 +113,9 @@ copyColorAsHSLA.onclick = function() {
 }
 
 // Disable right-click menu
-// document.oncontextmenu = function() {
-//     window.event.returnValue = false;
-// }
+document.oncontextmenu = function() {
+    window.event.returnValue = false;
+}
 
 soliderH.oninput = function() {
     updataInterface();
@@ -250,6 +250,7 @@ function updataInterface() {
     console.log(window.location.hash)
 }
 
+// Call from Sketch
 function updateInterfaceWithRGBA(r, g, b, a) {
     var hsl = RGBtoHSL(r, g, b);
     soliderH.value = hsl[0];

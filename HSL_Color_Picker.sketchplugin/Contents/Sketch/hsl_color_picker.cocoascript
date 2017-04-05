@@ -110,16 +110,11 @@ var onRun = function(context) {
                     );
                 }
 
+                // Save color
+                setPreferencesInitColor(colorFromWebView[0], colorFromWebView[1], colorFromWebView[2], colorFromWebView[3]);
+
             }
 
-            if (locationHash == "#updateInterface") {
-                if (updateContext().initColor) {
-                    var rgba = MSColorToRGBA(updateContext().initColor);
-                    windowObject.evaluateWebScript(
-                        'updateInterfaceWithRGBA(' + rgba[0] + ', ' + rgba[1] + ', ' + rgba[2] + ', ' + rgba[3] + ')'
-                    );
-                }
-            }
         })
     });
 
@@ -269,6 +264,15 @@ function updateContext() {
         var layer = selection.firstObject();
         if (getFillColor(layer)) {
             initColor = getFillColor(layer);
+        }
+    } else {
+        if (getPreferencesInitColor()) {
+            initColor = rgbaToMSColor(
+                getPreferencesInitColor()[0],
+                getPreferencesInitColor()[1],
+                getPreferencesInitColor()[2],
+                getPreferencesInitColor()[3]
+            );
         }
     }
     return {
@@ -433,4 +437,19 @@ function copyToClipBoard(document, message, str) {
     pboard.clearContents();
     pboard.setString_forType_(str, NSStringPboardType);
     document.showMessage(message);
+}
+
+function getPreferencesInitColor() {
+    var userDefaults = NSUserDefaults.standardUserDefaults();
+    if (userDefaults.objectForKey("com.ashung.hung.hsl_color_picker")) {
+        return userDefaults.objectForKey("com.ashung.hung.hsl_color_picker");
+    } else {
+        return null;
+    }
+}
+
+function setPreferencesInitColor(red, green, blue, alpha) {
+    var userDefaults = NSUserDefaults.standardUserDefaults();
+    userDefaults.setObject_forKey([red, green, blue, alpha], "com.ashung.hung.hsl_color_picker");
+    userDefaults.synchronize();
 }
