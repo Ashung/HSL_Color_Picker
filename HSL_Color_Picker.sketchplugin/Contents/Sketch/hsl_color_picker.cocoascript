@@ -184,16 +184,8 @@ var reportIssue = function(context) {
     openUrlInBrowser("https://github.com/Ashung/HSL_Color_Picker/issues");
 };
 
-var donateViaPaypal = function() {
-    openUrlInBrowser("https://www.paypal.me/ashung/2");
-};
-
-var donateViaWechat = function() {
-    openUrlInBrowser("http://ashung.github.io/Automate-Sketch/css/donate_wechat_rmb_10.png");
-};
-
-var donateViaAlipay = function() {
-    openUrlInBrowser("http://ashung.github.io/Automate-Sketch/css/donate_alipay_rmb_10.png");
+var donate = function() {
+    openUrlInBrowser("http://ashung.github.io/donate.html");
 };
 
 function openUrlInBrowser(url) {
@@ -258,7 +250,13 @@ function changeColor(context, keyword) {
 function updateContext() {
     var doc = NSDocumentController.sharedDocumentController().currentDocument();
     var initColor;
-    var selection = doc.selectedLayers().layers();
+
+    if (MSApplicationMetadata.metadata().appVersion > 41.2) {
+        var selection = doc.selectedLayers().layers();
+    } else {
+        var selection = doc.selectedLayers();
+    }
+
     // Get selected layer color.
     if (selection.count() > 0) {
         var layer = selection.firstObject();

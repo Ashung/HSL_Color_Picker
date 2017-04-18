@@ -6,7 +6,7 @@
     "homepage": "https://github.com/Ashung/HSL_Color_Picker",
     "downloadURL": "https://github.com/Ashung/HSL_Color_Picker/archive/master.zip",
     "updateURL": "https://github.com/Ashung/HSL_Color_Picker/archive/master.zip",
-    "version": "2.1.0",
+    "version": "2.2.0",
     "identifier": "com.ashung.hung.hsl_color_picker",
     "compatibleVersion": "3",
     "bundleVersion": "1",
@@ -89,27 +89,11 @@
             "script": "hsl_color_picker.cocoascript"
         },
         {
-            "name": "Donate via PayPal 💵 ",
-            "identifier": "donate_via_paypal",
-            "description": "Donate via PayPal.",
-            "icon": "icons/hsl_paypal.png",
-            "handler": "donateViaPaypal",
-            "script": "hsl_color_picker.cocoascript"
-        },
-        {
-            "name": "Donate via WeChat 💵 ",
-            "identifier": "donate_via_wechat",
-            "description": "Donate via WeChat.",
-            "icon": "icons/hsl_wechat.png",
-            "handler": "donateViaWechat",
-            "script": "hsl_color_picker.cocoascript"
-        },
-        {
-            "name": "Donate via Alipay 💵 ",
-            "identifier": "donate_via_alipay",
-            "description": "Donate via Alipay.",
+            "name": "Donate 💵 ",
+            "identifier": "donate",
+            "description": "Donate via Wechat, Alipay or PayPal.",
             "icon": "icons/hsl_alipay.png",
-            "handler": "donateViaAlipay",
+            "handler": "donate",
             "script": "hsl_color_picker.cocoascript"
         }
     ],
@@ -132,9 +116,7 @@
                     "web_site",
                     "report_issue",
                     "-",
-                    "donate_via_paypal",
-                    "donate_via_wechat",
-                    "donate_via_alipay"
+                    "donate"
                 ]
             }
         ]
