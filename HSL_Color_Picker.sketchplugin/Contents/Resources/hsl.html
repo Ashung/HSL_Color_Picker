@@ -112,11 +112,6 @@ copyColorAsHSLA.onclick = function() {
     return false;
 }
 
-// Disable right-click menu
-document.oncontextmenu = function() {
-    window.event.returnValue = false;
-}
-
 soliderH.oninput = function() {
     updataInterface();
 }
@@ -183,6 +178,15 @@ textA.onchange = function() {
 window.onload = function() {
     updataInterface();
 }
+
+window.onfocus = function() {
+    window.location.hash = "windowOnFocus";
+}
+
+// Disable right-click menu
+// document.oncontextmenu = function() {
+//     window.event.returnValue = false;
+// }
 
 function getCurrentColor() {
     return color;
@@ -258,6 +262,29 @@ function updateInterfaceWithRGBA(r, g, b, a) {
     soliderL.value = hsl[2];
     soliderA.value = a;
     updataInterface();
+}
+
+function clickAtPoint(x, y) {
+    var parent = document.elementFromPoint(x, y);
+    parent.click();
+    parent.focus();
+
+    // parent.style.backgroundColor = "red";
+
+    console.log(parent.id);
+
+    //soliderH.onclick = function(e) {
+        //var event = e || window.event;
+        // console.log(soliderH.offsetLeft);
+        // console.log(event.clientX + ', ' + event.clientY);
+        soliderH.value = (x - soliderH.offsetLeft) / soliderH.clientWidth * 360;
+        updataInterface();
+    //}
+
+
+
+
+
 }
 
 function checkNumber(target, maxValue) {
