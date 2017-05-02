@@ -57,13 +57,14 @@ var onRun = function(context) {
 
             var locationHash = windowObject.evaluateWebScript("window.location.hash");
 
+            // Fixs window blur
             if (locationHash == "#windowOnFocus") {
                 var point = colorPicker.currentEvent().locationInWindow();
                 var x = point.x;
                 var y = windowHeight - point.y - 24;
-                windowObject.evaluateWebScript("clickAtPoint(" + x + ", " + y + ")");
-
-                log(x + "," + y);
+                if (x > 0 && y > 0) {
+                    windowObject.evaluateWebScript("clickAtPoint(" + x + ", " + y + ")");
+                }
             }
 
             if (/^#\d+(-\d+){3}/.test(locationHash)) {

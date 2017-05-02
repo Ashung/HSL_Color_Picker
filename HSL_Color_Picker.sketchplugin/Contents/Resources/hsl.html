@@ -184,9 +184,9 @@ window.onfocus = function() {
 }
 
 // Disable right-click menu
-// document.oncontextmenu = function() {
-//     window.event.returnValue = false;
-// }
+document.oncontextmenu = function() {
+    window.event.returnValue = false;
+}
 
 function getCurrentColor() {
     return color;
@@ -229,7 +229,6 @@ function solidBackgroundA(h, s, l) {
 }
 
 function updataInterface() {
-    // console.log(soliderH.value, soliderS.value, soliderL.value);
     textH.value = soliderH.value;
     textS.value = soliderS.value;
     textL.value = soliderL.value;
@@ -250,8 +249,9 @@ function updataInterface() {
     color.hsb = RGBtoHSB(rgb[0], rgb[1], rgb[2]);
 
     window.location.hash = color.r + "-" + color.g + "-" + color.b + "-" + color.a;
-    console.log(color);
-    console.log(window.location.hash)
+
+    // console.log(color);
+    // console.log(window.location.hash)
 }
 
 // Call from Sketch
@@ -265,26 +265,27 @@ function updateInterfaceWithRGBA(r, g, b, a) {
 }
 
 function clickAtPoint(x, y) {
-    var parent = document.elementFromPoint(x, y);
-    parent.click();
-    parent.focus();
-
-    // parent.style.backgroundColor = "red";
-
-    console.log(parent.id);
-
-    //soliderH.onclick = function(e) {
-        //var event = e || window.event;
-        // console.log(soliderH.offsetLeft);
-        // console.log(event.clientX + ', ' + event.clientY);
-        soliderH.value = (x - soliderH.offsetLeft) / soliderH.clientWidth * 360;
-        updataInterface();
-    //}
-
-
-
-
-
+    var element = document.elementFromPoint(x, y);
+    if (element.tagName == "INPUT") {
+        if (element.type == "range") {
+            if (element.id == "color-h") {
+                soliderH.value = (x - soliderH.offsetLeft) / soliderH.clientWidth * 360;
+            }
+            if (element.id == "color-s") {
+                soliderS.value = (x - soliderS.offsetLeft) / soliderS.clientWidth * 100;
+            }
+            if (element.id == "color-l") {
+                soliderL.value = (x - soliderL.offsetLeft) / soliderL.clientWidth * 100;
+            }
+            if (element.id == "color-a") {
+                soliderA.value = (x - soliderA.offsetLeft) / soliderA.clientWidth * 100;
+            }
+            updataInterface();
+        }
+        if (element.type == "number" || element.type == "text") {
+            element.focus();
+        }
+    }
 }
 
 function checkNumber(target, maxValue) {
@@ -295,7 +296,6 @@ function checkNumber(target, maxValue) {
         target.value = maxValue;
     }
 }
-
 
 /**
  * @param   Number  h       The hue
