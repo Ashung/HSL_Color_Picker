@@ -286,6 +286,9 @@ function clickAtPoint(x, y) {
             element.focus();
         }
     }
+    if (element.tagName == "BUTTON" || element.tagName == "A") {
+        element.click();
+    }
 }
 
 function checkNumber(target, maxValue) {
