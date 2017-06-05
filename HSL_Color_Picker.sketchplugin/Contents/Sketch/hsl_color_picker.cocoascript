@@ -195,7 +195,7 @@ var reportIssue = function(context) {
 };
 
 var donate = function() {
-    openUrlInBrowser("http://ashung.github.io/donate.html");
+    openUrlInBrowser("http://ashung.github.io/donate.html?ref=hsl_color_picker");
 };
 
 function openUrlInBrowser(url) {
@@ -248,6 +248,9 @@ function changeColor(context, keyword) {
                 var newMsColor = HSLtoMSColor(h, s, l);
                 setFillColor(layer, newMsColor);
             }
+            // trigger selectionChanged action
+            layer.select_byExpandingSelection(false, true);
+            layer.select_byExpandingSelection(true, true);
         }
     } else {
         doc.showMessage("Please select at least one shape or text layer.");
