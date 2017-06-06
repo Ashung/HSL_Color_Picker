@@ -270,22 +270,23 @@ function updateContext() {
         var selection = doc.selectedLayers();
     }
 
+    if (getPreferencesInitColor()) {
+        initColor = rgbaToMSColor(
+            getPreferencesInitColor()[0],
+            getPreferencesInitColor()[1],
+            getPreferencesInitColor()[2],
+            getPreferencesInitColor()[3]
+        );
+    }
+
     // Get selected layer color.
     if (selection.count() > 0) {
         var layer = selection.firstObject();
         if (getFillColor(layer)) {
             initColor = getFillColor(layer);
         }
-    } else {
-        if (getPreferencesInitColor()) {
-            initColor = rgbaToMSColor(
-                getPreferencesInitColor()[0],
-                getPreferencesInitColor()[1],
-                getPreferencesInitColor()[2],
-                getPreferencesInitColor()[3]
-            );
-        }
     }
+
     return {
         doc : doc,
         selection : selection,
