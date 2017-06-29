@@ -51,6 +51,8 @@ var onRun = function(context) {
                 'updateInterfaceWithRGBA(' + rgba[0] + ', ' + rgba[1] + ', ' + rgba[2] + ', ' + rgba[3] + ')'
             );
 
+            ga(context, "Open", "open");
+
         }),
 
         "webView:didChangeLocationWithinPageForFrame:" : (function(webView, webFrame) {
@@ -85,6 +87,7 @@ var onRun = function(context) {
 
                 if (/-addToDocumentColors-\d{13}$/.test(locationHash)) {
                     addColorToDocumentColors(updateContext().doc, MSColorFormWebView);
+                    ga(context, "Add", "add_color_to_document");
                 }
 
                 if (/-copyColorAsHEX-\d{13}$/.test(locationHash)) {
@@ -94,6 +97,7 @@ var onRun = function(context) {
                         "HEX color code is copyed.",
                         "#" + hex
                     );
+                    ga(context, "Copy", "copy_color_as_hex");
                 }
 
                 if (/-copyColorAsRGBA-\d{13}$/.test(locationHash)) {
@@ -106,6 +110,7 @@ var onRun = function(context) {
                         "RGBA color code is copyed.",
                         "rgba(" + r + ", " + g + ", " + b + ", " + (parseInt(a) / 100) + ")"
                     );
+                    ga(context, "Copy", "copy_color_as_rgba");
                 }
 
                 if (/-copyColorAsHSLA-\d{13}$/.test(locationHash)) {
@@ -118,6 +123,7 @@ var onRun = function(context) {
                         "HSLA color code is copyed.",
                         "hsla(" + h + ", " + s + "%, " + l + "%, " + (parseInt(a) / 100) + ")"
                     );
+                    ga(context, "Copy", "copy_color_as_hsla");
                 }
 
                 // Save color
@@ -164,38 +170,47 @@ var onSelectionChanged = function(context) {
 
 var huePlus = function(context) {
     changeColor(context, "huePlus");
+    ga(context, "Change", "change_color_hue_plus");
 }
 
 var hueMinus = function(context) {
     changeColor(context, "hueMinus");
+    ga(context, "Change", "change_color_hue_minus");
 }
 
 var moreDark = function(context) {
     changeColor(context, "dark");
+    ga(context, "Change", "change_color_drak");
 }
 
 var moreLight = function(context) {
     changeColor(context, "light");
+    ga(context, "Change", "change_color_light");
 }
 
 var moreBright = function(context) {
     changeColor(context, "bright");
+    ga(context, "Change", "change_color_bright");
 }
 
 var moreGray = function(context) {
     changeColor(context, "gray");
+    ga(context, "Change", "change_color_gray");
 }
 
 var website = function(context) {
     openUrlInBrowser("https://github.com/Ashung/HSL_Color_Picker");
+    ga(context, "Help", "website");
 };
 
 var reportIssue = function(context) {
     openUrlInBrowser("https://github.com/Ashung/HSL_Color_Picker/issues");
+    ga(context, "Help", "issues");
 };
 
 var donate = function() {
     openUrlInBrowser("http://ashung.github.io/donate.html?ref=hsl_color_picker");
+    ga(context, "Help", "donate");
 };
 
 function openUrlInBrowser(url) {
@@ -207,6 +222,8 @@ function openUrlInBrowser(url) {
  * @param    String     keyword: dark, light, bright, gray, hueMinus, huePlus
  */
 function changeColor(context, keyword) {
+
+    var sketch = context.api();
     var doc = context.document;
     var selection = context.selection;
 
@@ -249,8 +266,15 @@ function changeColor(context, keyword) {
                 setFillColor(layer, newMsColor);
             }
             // trigger selectionChanged action
-            layer.select_byExpandingSelection(false, true);
-            layer.select_byExpandingSelection(true, true);
+            // Fix Sketch 45
+            if (sketch.build < 43475) {
+                layer.select_byExpandingSelection(false, true);
+                layer.select_byExpandingSelection(true, true);
+            } else {
+                layer.select_byExtendingSelection(false, true);
+                layer.select_byExtendingSelection(true, true);
+            }
+
         }
     } else {
         doc.showMessage("Please select at least one shape or text layer.");
@@ -464,4 +488,52 @@ function setPreferencesInitColor(red, green, blue, alpha) {
     var userDefaults = NSUserDefaults.standardUserDefaults();
     userDefaults.setObject_forKey([red, green, blue, alpha], "com.ashung.hung.hsl_color_picker");
     userDefaults.synchronize();
+}
+
+function ga(context, eventCategory, eventAction, eventLabel, eventValue) {
+
+    var uuidKey = 'google.analytics.uuid';
+    var uuid = NSUserDefaults.standardUserDefaults().objectForKey(uuidKey);
+    if (!uuid) {
+        uuid = NSUUID.UUID().UUIDString();
+        NSUserDefaults.standardUserDefaults().setObject_forKey(uuid, uuidKey);
+    }
+
+    var trackingID = "UA-99098773-5",
+        appName = encodeURI(context.plugin.name()),
+        appId = context.plugin.identifier(),
+        appVersion = context.plugin.version();
+
+    var url = "https://www.google-analytics.com/collect?v=1";
+    // Tracking ID
+    url += "&tid=" + trackingID;
+    // Source
+    url += "&ds=sketch" + MSApplicationMetadata.metadata().appVersion;
+    // Client ID
+    url += "&cid=" + uuid;
+    // pageview, screenview, event, transaction, item, social, exception, timing
+    url += "&t=event";
+    // App Name
+    url += "&an=" + appName;
+    // App ID
+    url += "&aid=" + appId;
+    // App Version
+    url += "&av=" + appVersion;
+    // Event category
+    url += "&ec=" + encodeURI(eventCategory);
+    // Event action
+    url += "&ea=" + encodeURI(eventAction);
+    // Event label
+    if (eventLabel) {
+        url += "&el=" + encodeURI(eventLabel);
+    }
+    // Event value
+    if (eventValue) {
+        url += "&ev=" + encodeURI(eventValue);
+    }
+
+    var session = NSURLSession.sharedSession();
+    var task = session.dataTaskWithURL(NSURL.URLWithString(NSString.stringWithString(url)));
+    task.resume();
+
 }
