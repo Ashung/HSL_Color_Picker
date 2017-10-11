@@ -94,7 +94,7 @@ var onRun = function(context) {
                     var hex = windowObject.evaluateWebScript("textHex.value");
                     copyToClipBoard(
                         updateContext().doc,
-                        "HEX color code is copyed.",
+                        "HEX color code is copied.",
                         "#" + hex
                     );
                     ga(context, "Copy", "copy_color_as_hex");
@@ -107,7 +107,7 @@ var onRun = function(context) {
                         a = windowObject.evaluateWebScript("textA.value");
                     copyToClipBoard(
                         updateContext().doc,
-                        "RGBA color code is copyed.",
+                        "RGBA color code is copied.",
                         "rgba(" + r + ", " + g + ", " + b + ", " + (parseInt(a) / 100) + ")"
                     );
                     ga(context, "Copy", "copy_color_as_rgba");
@@ -120,7 +120,7 @@ var onRun = function(context) {
                         a = windowObject.evaluateWebScript("textA.value");
                     copyToClipBoard(
                         updateContext().doc,
-                        "HSLA color code is copyed.",
+                        "HSLA color code is copied.",
                         "hsla(" + h + ", " + s + "%, " + l + "%, " + (parseInt(a) / 100) + ")"
                     );
                     ga(context, "Copy", "copy_color_as_hsla");
