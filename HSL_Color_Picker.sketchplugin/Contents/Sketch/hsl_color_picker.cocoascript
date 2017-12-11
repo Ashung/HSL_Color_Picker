@@ -433,7 +433,11 @@ function getFillColor(layer) {
         }
     }
     if (layer.class() == "MSTextLayer") {
-        return layer.textColor();
+        if (MSApplicationMetadata.metadata().appVersion >= 48) {
+            return MSColor.alloc().initWithImmutableObject(layer.textColor());
+        } else {
+            return layer.textColor();
+        }
     }
 }
 
@@ -453,7 +457,12 @@ function setFillColor(layer, color) {
         }
     }
     if (layer.class() == "MSTextLayer") {
-        layer.setTextColor(color);
+        if (MSApplicationMetadata.metadata().appVersion >= 48) {
+            layer.setTextColor(color.immutableModelObject());
+        } else {
+            layer.setTextColor(color);
+        }
+
     }
 }
 
