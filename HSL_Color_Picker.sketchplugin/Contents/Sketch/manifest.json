@@ -5,8 +5,9 @@
     "email": "Ashung.hung@gmail.com",
     "homepage": "https://github.com/Ashung/HSL_Color_Picker",
     "appcast": "https://ashung.github.io/HSL_Color_Picker/appcast.xml",
-    "version": "2.3.2",
+    "version": "2.3.3",
     "identifier": "com.ashung.hung.hsl_color_picker",
+    "icon": "icon.png",
     "compatibleVersion": "3",
     "bundleVersion": "1",
     "commands": [
