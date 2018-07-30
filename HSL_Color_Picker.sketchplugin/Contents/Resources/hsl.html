@@ -113,16 +113,16 @@ copyColorAsHSLA.onclick = function() {
 }
 
 soliderH.oninput = function() {
-    updataInterface();
+    updataInterfaceBaseHSL();
 }
 soliderS.oninput = function() {
-    updataInterface();
+    updataInterfaceBaseHSL();
 }
 soliderL.oninput = function() {
-    updataInterface();
+    updataInterfaceBaseHSL();
 }
 soliderA.oninput = function() {
-    updataInterface();
+    updataInterfaceBaseHSL();
 }
 
 textHex.oninput = function() {
@@ -136,11 +136,7 @@ textHex.oninput = function() {
     }
 }
 textHex.onchange = function() {
-    var hsl = HEXtoHSL(this.value);
-    soliderH.value = hsl[0];
-    soliderS.value = hsl[1];
-    soliderL.value = hsl[2];
-    updataInterface();
+    updateInterfaceWithHEX(this.value);
 }
 
 textH.oninput = function() {
@@ -148,7 +144,7 @@ textH.oninput = function() {
 }
 textH.onchange = function() {
     soliderH.value = this.value;
-    updataInterface();
+    updataInterfaceBaseHSL();
 }
 
 textS.oninput = function() {
@@ -156,7 +152,7 @@ textS.oninput = function() {
 }
 textS.onchange = function() {
     soliderS.value = this.value;
-    updataInterface();
+    updataInterfaceBaseHSL();
 }
 
 textL.oninput = function() {
@@ -164,7 +160,7 @@ textL.oninput = function() {
 }
 textL.onchange = function() {
     soliderL.value = this.value;
-    updataInterface();
+    updataInterfaceBaseHSL();
 }
 
 textA.oninput = function() {
@@ -172,11 +168,11 @@ textA.oninput = function() {
 }
 textA.onchange = function() {
     soliderA.value = this.value;
-    updataInterface();
+    updataInterfaceBaseHSL();
 }
 
 window.onload = function() {
-    updataInterface();
+    updataInterfaceBaseHSL();
 }
 
 window.onfocus = function() {
@@ -228,19 +224,12 @@ function solidBackgroundA(h, s, l) {
     return css;
 }
 
-function updataInterface() {
-    textH.value = soliderH.value;
-    textS.value = soliderS.value;
-    textL.value = soliderL.value;
-    textA.value = soliderA.value;
-    textHex.value = HSLtoHEX(soliderH.value, soliderS.value, soliderL.value);
-    preview.style.background = "hsla(" + soliderH.value + "," + soliderS.value + "%," + soliderL.value + "%," + soliderA.value/100 + ")";
-    soliderTrackS.style.background = solidBackgroundS(soliderH.value, soliderL.value);
-    soliderTrackL.style.background = solidBackgroundL(soliderH.value, soliderS.value);
-    soliderTrackA.style.background = solidBackgroundA(soliderH.value, soliderS.value, soliderL.value);
+function updataInterfaceBaseHSL() {
+    var hex = HSLtoHEX(soliderH.value, soliderS.value, soliderL.value);
+    updateInterface(hex, soliderH.value, soliderS.value, soliderL.value, soliderA.value);
 
     var rgb = HSLtoRGB(soliderH.value, soliderS.value, soliderL.value);
-    color.hex = HSLtoHEX(soliderH.value, soliderS.value, soliderL.value);
+    color.hex = hex;
     color.r = rgb[0];
     color.g = rgb[1];
     color.b = rgb[2];
@@ -254,14 +243,53 @@ function updataInterface() {
     // console.log(window.location.hash)
 }
 
+function updateInterfaceWithHEX(hex) {
+    var hsl = HEXtoHSL(hex);
+    updateInterface(hex, hsl[0], hsl[1], hsl[2], soliderA.value);
+
+    var rgb = HEXtoRGB(hex);
+    color.hex = hex;
+    color.r = rgb[0];
+    color.g = rgb[1];
+    color.b = rgb[2];
+    color.a = Math.round(soliderA.value);
+    color.hsl = [Math.round(hsl[0]), Math.round(hsl[1]), Math.round(hsl[2])];
+    color.hsb = RGBtoHSB(rgb[0], rgb[1], rgb[2]);
+
+    window.location.hash = color.r + "-" + color.g + "-" + color.b + "-" + color.a;
+}
+
 // Call from Sketch
 function updateInterfaceWithRGBA(r, g, b, a) {
+    var hex = RGBtoHEX(r, g, b);
     var hsl = RGBtoHSL(r, g, b);
-    soliderH.value = hsl[0];
-    soliderS.value = hsl[1];
-    soliderL.value = hsl[2];
+    updateInterface(hex, hsl[0], hsl[1], hsl[2], a);
+
+    color.hex = hex;
+    color.r = r;
+    color.g = g;
+    color.b = b;
+    color.a = a;
+    color.hsl = [Math.round(hsl[0]), Math.round(hsl[1]), Math.round(hsl[2])];
+    color.hsb = RGBtoHSB(color.r, color.g, color.b);
+
+    window.location.hash = color.r + "-" + color.g + "-" + color.b + "-" + color.a;
+}
+
+function updateInterface(hex, h, s, l, a) {
+    textHex.value = hex;
+    textH.value = h;
+    textS.value = s;
+    textL.value = l;
+    textA.value = a;
+    soliderH.value = h;
+    soliderS.value = s;
+    soliderL.value = l;
     soliderA.value = a;
-    updataInterface();
+    preview.style.background = "hsla(" + h + "," + s + "%," + l + "%," + a/100 + ")";
+    soliderTrackS.style.background = solidBackgroundS(h, s);
+    soliderTrackL.style.background = solidBackgroundL(h, s);
+    soliderTrackA.style.background = solidBackgroundA(h, s, l);
 }
 
 function clickAtPoint(x, y) {
@@ -280,7 +308,7 @@ function clickAtPoint(x, y) {
             if (element.id == "color-a") {
                 soliderA.value = (x - soliderA.offsetLeft) / soliderA.clientWidth * 100;
             }
-            updataInterface();
+            updataInterfaceBaseHSL();
         }
         if (element.type == "number" || element.type == "text") {
             element.focus();
@@ -423,6 +451,25 @@ function HSLtoHEX(h, s, l) {
     hex_b = (hex_b.length == 1) ? "0" + hex_b : hex_b;
 
     return (hex_r + hex_g + hex_b).toUpperCase();
+}
+
+function RGBtoHEX(r, g, b) {
+    var hex_r = Math.round(r).toString(16);
+    var hex_g = Math.round(g).toString(16);
+    var hex_b = Math.round(b).toString(16);
+
+    hex_r = (hex_r.length == 1) ? "0" + hex_r : hex_r;
+    hex_g = (hex_g.length == 1) ? "0" + hex_g : hex_g;
+    hex_b = (hex_b.length == 1) ? "0" + hex_b : hex_b;
+
+    return (hex_r + hex_g + hex_b).toUpperCase();
+}
+
+function HEXtoRGB(hex) {
+    var r = parseInt(hex.substring(0, 2), 16),
+        g = parseInt(hex.substring(2, 4), 16),
+        b = parseInt(hex.substring(4, 6), 16);
+    return [r, g, b];
 }
 
 function HEXtoHSL(hex) {

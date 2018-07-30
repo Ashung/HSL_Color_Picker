@@ -129,6 +129,7 @@ var onRun = function(context) {
                 // Save color
                 setPreferencesInitColor(colorFromWebView[0], colorFromWebView[1], colorFromWebView[2], colorFromWebView[3]);
 
+                doc.reloadInspector();
             }
 
         })
