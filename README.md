@@ -4,15 +4,15 @@
 
 ## Installation
 
-- Search "HSL Color Picker" from [Sketch Runner](http://sketchrunner.com/) or [Sketchpacks](https://sketchpacks.com/).
+- Search "HSL Color Picker" from [Sketch Runner](http://sketchrunner.com/).
 - Download [master.zip](https://github.com/Ashung/HSL_Color_Picker/archive/master.zip), unzip it, double-click the "HSL_Color_Picker.sketchplugin".
 
 ## License
 
-[CC-BY-SA 4.0](http://creativecommons.org/licenses/by-sa/4.0/)
+MIT
 
 ## Donate
 
-Donate [$1.00](https://www.paypal.me/ashung/1)  [$2.00](https://www.paypal.me/ashung/2)  [$5.00](https://www.paypal.me/ashung/5) via PayPal.
+[Buy me a coffee](https://www.buymeacoffee.com/ashung) or donate [$2.00](https://www.paypal.me/ashung/2)  [$5.00](https://www.paypal.me/ashung/5) [$10.00](https://www.paypal.me/ashung/10)  via PayPal.
 
-通过 [微信](http://ashung.github.io/donate.html?ref=hsl_color_picker) 或 [支付宝](http://ashung.github.io/donate.html?ref=hsl_color_picker) 打赏。
+[使用支付宝或微信扫码支付](https://ashung.github.io/donate.html)

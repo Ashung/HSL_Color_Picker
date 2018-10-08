@@ -421,7 +421,7 @@ function HSLtoMSColor(h, s, l) {
  * @param    MSLayer    layer
  */
 function getFillColor(layer) {
-    if (layer.class() == "MSShapeGroup") {
+    if (isShapeLayer(layer)) {
         var fills = layer.style().enabledFills();
         if (fills.count() > 0) {
             if (fills.lastObject().fillType() == 0) {
@@ -433,7 +433,7 @@ function getFillColor(layer) {
             return null;
         }
     }
-    if (layer.class() == "MSTextLayer") {
+    if (isTextLayer(layer)) {
         if (MSApplicationMetadata.metadata().appVersion >= 48) {
             return MSColor.alloc().initWithImmutableObject(layer.textColor());
         } else {
@@ -447,7 +447,7 @@ function getFillColor(layer) {
  * @param    MSColor    color
  */
 function setFillColor(layer, color) {
-    if (layer.class() == "MSShapeGroup") {
+    if (isShapeLayer(layer)) {
         var fills = layer.style().enabledFills();
         if (fills.count() > 0 && fills.lastObject().fillType() == 0) {
             fills.lastObject().setColor(color);
@@ -457,7 +457,7 @@ function setFillColor(layer, color) {
             fill.setColor(color);
         }
     }
-    if (layer.class() == "MSTextLayer") {
+    if (isTextLayer(layer)) {
         if (MSApplicationMetadata.metadata().appVersion >= 48) {
             layer.setTextColor(color.immutableModelObject());
         } else {
@@ -465,6 +465,30 @@ function setFillColor(layer, color) {
         }
 
     }
+}
+
+function isShapeLayer(layer) {
+    if (MSApplicationMetadata.metadata().appVersion >= 52) {
+        if (
+            layer.class() == "MSShapeGroup" ||
+            layer.class() == "MSShapePathLayer" ||
+            layer.class() == "MSRectangleShape" ||
+            layer.class() == "MSOvalShape" ||
+            layer.class() == "MSTriangleShape" ||
+            layer.class() == "MSStarShape" ||
+            layer.class() == "MSPolygonShape"
+        ) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return layer.class() == "MSShapeGroup";
+    }
+}
+
+function isTextLayer(layer) {
+    return layer.class() == "MSTextLayer";
 }
 
 function addColorToDocumentColors(document, mscolor) {
