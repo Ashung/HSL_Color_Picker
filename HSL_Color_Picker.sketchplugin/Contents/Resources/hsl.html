@@ -113,16 +113,16 @@ copyColorAsHSLA.onclick = function() {
 }
 
 soliderH.oninput = function() {
-    updataInterfaceBaseHSL();
+    updateInterfaceBaseHSL();
 }
 soliderS.oninput = function() {
-    updataInterfaceBaseHSL();
+    updateInterfaceBaseHSL();
 }
 soliderL.oninput = function() {
-    updataInterfaceBaseHSL();
+    updateInterfaceBaseHSL();
 }
 soliderA.oninput = function() {
-    updataInterfaceBaseHSL();
+    updateInterfaceBaseHSL();
 }
 
 textHex.oninput = function() {
@@ -144,7 +144,7 @@ textH.oninput = function() {
 }
 textH.onchange = function() {
     soliderH.value = this.value;
-    updataInterfaceBaseHSL();
+    updateInterfaceBaseHSL();
 }
 
 textS.oninput = function() {
@@ -152,7 +152,7 @@ textS.oninput = function() {
 }
 textS.onchange = function() {
     soliderS.value = this.value;
-    updataInterfaceBaseHSL();
+    updateInterfaceBaseHSL();
 }
 
 textL.oninput = function() {
@@ -160,7 +160,7 @@ textL.oninput = function() {
 }
 textL.onchange = function() {
     soliderL.value = this.value;
-    updataInterfaceBaseHSL();
+    updateInterfaceBaseHSL();
 }
 
 textA.oninput = function() {
@@ -168,11 +168,11 @@ textA.oninput = function() {
 }
 textA.onchange = function() {
     soliderA.value = this.value;
-    updataInterfaceBaseHSL();
+    updateInterfaceBaseHSL();
 }
 
 window.onload = function() {
-    updataInterfaceBaseHSL();
+    updateInterfaceBaseHSL();
 }
 
 window.onfocus = function() {
@@ -224,7 +224,7 @@ function solidBackgroundA(h, s, l) {
     return css;
 }
 
-function updataInterfaceBaseHSL() {
+function updateInterfaceBaseHSL() {
     var hex = HSLtoHEX(soliderH.value, soliderS.value, soliderL.value);
     updateInterface(hex, soliderH.value, soliderS.value, soliderL.value, soliderA.value);
 
@@ -287,7 +287,7 @@ function updateInterface(hex, h, s, l, a) {
     soliderL.value = l;
     soliderA.value = a;
     preview.style.background = "hsla(" + h + "," + s + "%," + l + "%," + a/100 + ")";
-    soliderTrackS.style.background = solidBackgroundS(h, s);
+    soliderTrackS.style.background = solidBackgroundS(h, l);
     soliderTrackL.style.background = solidBackgroundL(h, s);
     soliderTrackA.style.background = solidBackgroundA(h, s, l);
 }
@@ -308,7 +308,7 @@ function clickAtPoint(x, y) {
             if (element.id == "color-a") {
                 soliderA.value = (x - soliderA.offsetLeft) / soliderA.clientWidth * 100;
             }
-            updataInterfaceBaseHSL();
+            updateInterfaceBaseHSL();
         }
         if (element.type == "number" || element.type == "text") {
             element.focus();
