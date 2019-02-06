@@ -1,5 +1,7 @@
 # HSL Color Picker
 
+**This project is no longer maintenance, since Sketch 53 support HSL.**
+
 ![](https://ashung.github.io/HSL_Color_Picker/hsl_color_picker.png)
 
 ## Installation
